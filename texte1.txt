@@ -1,0 +1,14 @@
+Ceci est un exemple de texte 
+On peut  par exemple  y indexer
+les mots  
+	- exemple
+	- texte
+	- mot
+	- mots
+Un exemple reste un exemple et
+ne couvre pas tous les cas
+possibles 
+Le mot exemple apparaît deux fois
+au début du paragraphe précédent
+mais il ne faut pas voir deux fois
+la ligne en question 
