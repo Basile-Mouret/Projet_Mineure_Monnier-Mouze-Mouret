@@ -2,7 +2,7 @@
 
 
 class graphe :
-    def __init__(self, noeuds : set, arcs : dict[tuple : list[tuple]]) -> None:
+    def __init__(self, noeuds : set, arcs : dict[tuple : tuple[int,list[tuple]]]) -> None:
         self.noeuds = noeuds
         self.arcs = {n : [a[1] for a in arcs if a[0] == n] for n in noeuds}
     
@@ -41,28 +41,6 @@ class graphe :
             
         return parcours
     
-
-
-
-    def cycle(self) -> bool:
-        """détecte si le graphe contient un cycle
-        
-        Returns:
-            bool: résultat
-        """
-        for noeud in self.noeuds:
-            pile = [noeud]
-            parcours = []
-            while len(pile)!=0:
-                n = pile.pop(-1)
-                parcours.append(n)
-                for i in self.arcs[n]:
-                    if i not in parcours:
-                        pile.append(i)
-                    else : return True#détection d'un cycle
-        return False
-    
-    
     def géné_lateX(self):
         tex = "\documentclass{article}\n\\usepackage[utf8]{inputenc}\n\\usepackage[pdf]{graphviz}\n\\usepackage[autosize]{dot2texi}\n\\usepackage{tikz}\n\\usetikzlibrary{shapes,arrows}\n\\begin{document}"
         tex += "\n\\begin{dot2tex}[neato,options=-tmath,scale=0.5]digraph grours {rankdir=LR;\n"
@@ -76,25 +54,22 @@ class graphe :
         
     #Guile
     def contient_cycle(self):
-        """
-        Détecte la présence d'éventuels cycles dans le graphe
-        :return: un booléen (vrai si le graphe contient un cycle, faux sinon) 
-        """
-        T=[]
-        for noeud1 in T:
-            for noeud2 in T:
-                if arc_present(self,noeud1,noeud2):
-                    T.append([noeud1,noeud2])
-        for b in range(10):
-            for i in range(len(T)):
-                for j in range(len(T)):
-                    if T[i][-1]==T[j][0]:
-                        T[i].append(T[j][-1])
-                        T[j]=0
-        return T
+ 
+        for noeud_depart in self.noeuds:
+            pile = [noeud_depart]
+            parcours = []
+            while len(pile)!=0:
+                n = pile.pop(0)
+                parcours.append(n)
+                for i in self.arcs[n]:
+                    if i not in parcours:
+                        pile.append(i)
+                    else:
+                        return True
+        return False
 
                    
-    
+#a voir si utile
 def arc_present(g, noeud1, noeud2):
   """
   Indique s'il existe un arc entre deux points
@@ -131,10 +106,11 @@ def to_csv(name_csv_file: str, fieldnames:list[str], rows:list[list[str]]) -> No
         fieldnames(list[str]): liste des noms de champs 
         rows(list[list[str]]): liste des lignes (liste de colonnes)
     """
-    with open(name_csv_file + '.csv ' ,'w', encoding="utf-8") as csvfile:
+    with open(name_csv_file + ".csv" ,'w', encoding="utf-8") as csvfile:
         csvwriter=csv.writer(csvfile,delimiter=',',quoting=csv.QUOTE_ALL)
         csvwriter.writerow(fieldnames)
         for r in rows:
+            print(r)
             csvwriter.writerow(r)
     
     
@@ -175,14 +151,15 @@ def couple(s:list)->tuple:
             for i in range(len(precedents)):
                 s2.append((precedents[i],s[0],s[2]))
             return s2
-"""                
-def csv_to_graphe_b(nom_fichier:str) -> graphe:
+        
+"""def csv_to_graphe_b(nom_fichier:str) -> graphe:
     with open(nom_fichier+'.csv','r',encoding='utf8') as file:
         noeud=set()
         arcs=dict()
         for ligne in file:
             s=ligne.split(',')
             noeud = noeud  | {s[0]}
+            print(s)
             arcs[s[0]] = [n for n in s[3]]#ajouter les arcs
         return graphe(noeud,arcs)     
     """
@@ -192,8 +169,7 @@ def main():
     grCours = graphe(set(range (10)),{(5,8),(8,2),(2,9),(4,8),(4,0),(0,7),(7,6),(2,4),(8,1),(1,3),(1,6)})
    
     
-    to_csv("Graphe",["Identificateur","Description","Durée","Précédente(s)","S0","S1","S2"]
-        ,[["PM","Permis de construire ",'60',"OG"],
+    to_csv("Graphe",["Identificateur","Description","Durée","Précédente(s)","S0","S1","S2"],[["PM","Permis de construire ",'60',"OG"],
         ["F","Fondations",'7',"PC"]
         ,["GE1","Passage des gaines et évacuations ","3","F"],
         ["DRC","Dalle rez de chaussée","7","GE1"],
@@ -217,8 +193,11 @@ def main():
         ["S","Serrurerie","3","P CM"],
         ["R1","Revêtement des sols (moquettes) ","2","C S"],
         ["R","Réception de la maison ","0.5","MP S"]]) 
+    
     grph = csv_to_graphe("Graphe")
     grCours.géné_lateX()
+    print(grph.noeuds)
+    print(grph.arcs)
     
 if __name__ == "__main__":
     main()
