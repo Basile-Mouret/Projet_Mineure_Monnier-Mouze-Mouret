@@ -75,23 +75,39 @@ class graphe :
         file.close()
         
     #Guile
+    def contient_cycle2(self):
+ 
+        for noeud_depart in self.noeuds:
+            pile = [noeud_depart]
+            parcours = []
+            while len(pile)!=0:
+                n = pile.pop(0)
+                parcours.append(n)
+                for i in self.arcs[n]:
+                    if i not in parcours:
+                        pile.append(i)
+                    else:
+                        return True
+        return False
+
     def contient_cycle(self):
         """
         Détecte la présence d'éventuels cycles dans le graphe
         :return: un booléen (vrai si le graphe contient un cycle, faux sinon) 
         """
-        T=[]
-        for noeud1 in T:
-            for noeud2 in T:
-                if arc_present(self,noeud1,noeud2):
-                    T.append([noeud1,noeud2])
-        for b in range(10):
-            for i in range(len(T)):
-                for j in range(len(T)):
-                    if T[i][-1]==T[j][0]:
-                        T[i].append(T[j][-1])
-                        T[j]=0
-        return T
+        for i in self.noeuds:
+            visite=[]
+            pile=[i]
+            while len(pile)!=0:
+              s=pile.pop()
+              if s in visite:
+                return True
+              else:
+                visite.append(i)
+                b=self.arcs[i]
+                for j in range(len(b)):
+                  pile.append(b[j])
+        return False
 
                    
     
