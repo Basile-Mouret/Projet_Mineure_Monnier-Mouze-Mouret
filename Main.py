@@ -2,7 +2,7 @@
 
 
 class graphe :
-    def __init__(self, noeuds:set:set, arcs:list[tuple]:list[tuple]) -> None:
+    def __init__(self, noeuds:set, arcs:list[tuple]) -> None:
         self.noeuds = noeuds
         self.arcs = {n : [a[1] for a in arcs if a[0] == n] for n in noeuds}
     
