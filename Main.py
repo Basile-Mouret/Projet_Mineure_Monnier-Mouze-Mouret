@@ -74,7 +74,7 @@ class graphe :
         file.write(tex)
         file.close()
         
-    
+    #Guile
     def contient_cycle(self):
         """
         Détecte la présence d'éventuels cycles dans le graphe
@@ -121,7 +121,7 @@ def arc_present(g, noeud1, noeud2):
 
   
   
-  
+#Ben
 import csv
 
 def to_csv(name_csv_file: str, fieldnames:list[str], rows:list[list[str]]) -> None:
@@ -131,7 +131,7 @@ def to_csv(name_csv_file: str, fieldnames:list[str], rows:list[list[str]]) -> No
         fieldnames(list[str]): liste des noms de champs 
         rows(list[list[str]]): liste des lignes (liste de colonnes)
     """
-    with open(name_csv_file + ' .csv ' ,'w', encoding="utf-8") as csvfile:
+    with open(name_csv_file + '.csv ' ,'w', encoding="utf-8") as csvfile:
         csvwriter=csv.writer(csvfile,delimiter=',',quoting=csv.QUOTE_ALL)
         csvwriter.writerow(fieldnames)
         for r in rows:
@@ -147,12 +147,12 @@ def csv_to_graphe(nom_fichier:str) -> graphe:
     Returns:
         graphe: graphe issu du fichier.
     """
-    with open(nom_fichier+'csv','r',encoding='utf8') as file:
+    with open(nom_fichier+'.csv','r',encoding='utf8') as file:
         noeud=set()
         arcs=[]
         for ligne in file:
             s=ligne.split(',')
-            noeud = noeud  | s[0]
+            noeud = noeud  | {s[0]}
             arcs + couple(s)
         return graphe(noeud,arcs)
             
@@ -215,8 +215,7 @@ def main():
 
              ]
            ) 
-    grph = csv_to_graphe("Graphe")
-   
+    grCours.géné_lateX()
   
     
 if __name__ == "__main__":
