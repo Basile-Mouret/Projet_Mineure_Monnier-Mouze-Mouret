@@ -2,7 +2,7 @@
 
 
 class graphe :
-    def __init__(self, noeuds:set, arcs:list[tuple]) -> None:
+    def __init__(self, noeuds : set, arcs : dict[tuple : list[tuple]]) -> None:
         self.noeuds = noeuds
         self.arcs = {n : [a[1] for a in arcs if a[0] == n] for n in noeuds}
     
@@ -64,8 +64,8 @@ class graphe :
     
     
     def géné_lateX(self):
-        tex = "\documentclass{article}\n\\usepackage{tikz}\n\\begin{document}"
-        tex += "\\begin{dot2tex}[neato,options=-tmath,scale=0.5]digraph grours {rankdir=LR;\n"
+        tex = "\documentclass{article}\n\\usepackage[utf8]{inputenc}\n\\usepackage[pdf]{graphviz}\n\\usepackage[autosize]{dot2texi}\n\\usepackage{tikz}\n\\usetikzlibrary{shapes,arrows}\n\\begin{document}"
+        tex += "\n\\begin{dot2tex}[neato,options=-tmath,scale=0.5]digraph grours {rankdir=LR;\n"
         for arc in self.arcs:
             for i in self.arcs[arc]:
                 tex+=f"{arc} -> {i};"
@@ -153,7 +153,7 @@ def csv_to_graphe(nom_fichier:str) -> graphe:
         for ligne in file:
             s=ligne.split(',')
             noeud = noeud  | {s[0]}
-            arcs + couple(s)
+            arcs.append(couple(s))
         return graphe(noeud,arcs)
             
 def couple(s:list)->tuple:
@@ -165,7 +165,7 @@ def couple(s:list)->tuple:
         tuple: retourne les arcs du noeuds de la i-ème ligne
     """
     s2=[]
-    if s[3]==None:
+    if s[3]=="OG":
         return None
     else:
         if len(s[3])==1:
@@ -175,9 +175,17 @@ def couple(s:list)->tuple:
             for i in range(len(precedents)):
                 s2.append((precedents[i],s[0],s[2]))
             return s2
-                
-                
-    
+"""                
+def csv_to_graphe_b(nom_fichier:str) -> graphe:
+    with open(nom_fichier+'.csv','r',encoding='utf8') as file:
+        noeud=set()
+        arcs=dict()
+        for ligne in file:
+            s=ligne.split(',')
+            noeud = noeud  | {s[0]}
+            arcs[s[0]] = [n for n in s[3]]#ajouter les arcs
+        return graphe(noeud,arcs)     
+    """
         
         
 def main():
@@ -185,13 +193,13 @@ def main():
    
     
     to_csv("Graphe",["Identificateur","Description","Durée","Précédente(s)","S0","S1","S2"]
-        ,[["PM","Permis de construire ",'60'],
+        ,[["PM","Permis de construire ",'60',"OG"],
         ["F","Fondations",'7',"PC"]
-        ,["GE1","Passage des gaines et ´evacuations ","3","F"],
+        ,["GE1","Passage des gaines et évacuations ","3","F"],
         ["DRC","Dalle rez de chaussée","7","GE1"],
         ["MP","Murs porteurs ","14","DRC"],
         ["DP","Dalles plafond ","7","MP"],
-        ["GE2","Passage gaines et ´evacuation","3","DP"],
+        ["GE2","Passage gaines et évacuation","3","DP"],
         ["T","Toiture","14","GE2"],
         ["FE","Fenêtres","7","T"],
         ["PE","Portes extèrieures","3","T C"],
@@ -208,15 +216,9 @@ def main():
         ["PM","Peinture des murs","7","PP"],
         ["S","Serrurerie","3","P CM"],
         ["R1","Revêtement des sols (moquettes) ","2","C S"],
-        ["R","Réception de la maison ","0.5","MP S"],
-        
-        
-
-
-             ]
-           ) 
+        ["R","Réception de la maison ","0.5","MP S"]]) 
+    grph = csv_to_graphe("Graphe")
     grCours.géné_lateX()
-  
     
 if __name__ == "__main__":
     main()
