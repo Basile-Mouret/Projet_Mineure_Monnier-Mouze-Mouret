@@ -30,5 +30,62 @@
 Nous avons codé la classe graphe lors du troisième TP de mineure.
 Pour cee Projet nous réutilision la classe graphe crée lors du TP de mineurs. Nous l'adaptons à
 notre probleme.
+
+
+\section{Convertir fichier  en graphe}
+convertir en fichier 'csv',récupérer les infos interessantes dans le fichier csv pour creer un arbre, 
+necessité de former tout les arcs d'un certain noeuds-> creer une fonction couple
+
+
+section{Problématqique}
+On consid`ere un projet compos ́e de tˆaches auxquelles on associe une dur ́ee d’ex ́ecution et des relations avec
+d’autres tˆaches. Chaque tˆache n ́ecessite que les tˆaches qui la pr ́ec`edent aient  ́et ́e ex ́ecut ́ees pour pouvoir d ́ebuter.
+Le but du projet est de cr ́eer des structures de donn ́ees et des programmes permettant d’ ́evaluer la faisabilit ́e des
+projets et les conditions en termes de temporalit ́e.
+2 Architecture du programme
+Notre programme est divis ́e en deux fichiers. Le fichier f onctions principales.py d ́efinit la classe Graphe
+et contient toutes les fonctions sauf celle du rendu de l’analyse qui, elle, est contenue dans le fichier analyse.py.
+2.1 Documentation des fonctions
+— contient cycle : permet de d ́etecter si un graphe contient des cycles.
+Prend en entr ́ee un graphe et renvoie un bool ́een.
+— tous chemins : renvoie une liste contenant tous les chemins possibles entre deux points. Est n ́ecessaire
+pour d ́eterminer les chemins critiques.
+Prend en entr ́ee un graphe, les points de d ́epart et d’arriv ́ee et des listes contenant les noeuds visit ́es, le
+chemin parcouru et l’ensemble des chemins parcourus. Ces trois listes sont n ́ecessaires car la fonction est
+r ́ecursive.
+— Afficher tous chemins : permet de renvoyer le r ́esultat de tous chemins sans avoir `a sp ́ecifier les listes
+vides.
+Prend en entr ́ee un graphe et les points de d ́epart et d’arriv ́ee.
+— lire taches : permet de placer les donn ́ees contenues dans le fichier de tˆaches dans une liste. Prend en
+entr ́ee le fichier contenant les tˆaches et leurs informations et renvoie une liste de tˆaches. Ces tˆaches sont
+repr ́esent ́ees par une liste contenant dans l’ordre suivant : identifiant de la tˆache, dur ́ee de la tˆache, des-
+cription de la tˆache.
+— lire liaisons : permet de placer les donn ́ees contenues dans le fichier de liaisons dans un ensemble.
+Prend en entr ́ee le fichier contenant les liaisons et renvoie un ensemble de couples de la forme (point de
+d ́epart , point d’arriv ́ee)
+— duree taches : cr ́ee un dictionnaire associant `a chaque tˆaches sa dur ́ee.
+Prend en entr ́ee le fichier de tˆaches et renvoie le dictionnaire.
+— generer graphe : cr ́ee le graphe associ ́e au syst`eme de tˆaches contenu dans les fichiers fournis.
+Prend en entr ́ee les fichiers de tˆaches et de liaisons et renvoie le graphe associ ́e.
+— arc present : permet de savoir s’il existe un chemin entre deux points.
+Prend en entr ́ee un graphe et deux points et renvoie un bool ́een disant si oui ou non il y a un chemin entre
+ces deux points.
+— parcoursProfondeur : Renvoie le parcours en profondeur d’un graphe sous forme de liste.
+— chemin critique : trouve les chemins critiques, c’est-`a-dire les chemins contenant les points critiques (les
+points dont le retard entraˆınera un retard global du projet), d’un graphe.
+Prend en entr ́ee un graphe, un point de d ́epart, un point d’arriv ́ee et le fichier de tˆaches relatif au graphe.
+Renvoie un doublet form ́e par la liste du/des chemin/s critique/s et de la dur ́ee critique.
+— triTopologique : renvoie le tri topologique des noeuds d’un graphe, c’est-`a-dire tous les noeuds du graphe
+tri ́es du d ́ebut `a la fin, par niveaux.
+1
+Prend en entr ́ee le graphe.
+— date au plus tot : calcule la date de d ́epart possible au plus t ˆot pour chaque tˆaches.
+Prend en entr ́ee un graphe et le fichier de tˆache associ ́e. Retourne un dictionnaire associant `a chaque tˆache
+sa date de commencement au plus t ˆot.
+— date au plus tard : calcule la date de d ́epart au plus tard pour chaque tˆache sous peine d’engendrer un
+retard global du projet. Prend en entr ́ee un graphe et le fichier de tˆaches associ ́e. Retourne un dictionnaire
+associant `a chaque tˆache sa date de d ́epart au plus tard.
+— rediger rapport : cr ́ee un fichier LATEXcontenant les analyses demand ́ees `a l’aide des programmes pr ́ec ́edents.
+Prend en entr ́ee les fichiers de liaison et de tˆache d’un p
 \p
 \end{document} 

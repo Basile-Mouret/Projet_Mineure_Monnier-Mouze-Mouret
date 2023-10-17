@@ -1,11 +1,11 @@
 Identificateur,Description,Durée,Précédente(s),S0,S1,S2
-PM,Permis de construire ,60,OG
+PM,Permis de construire ,60,
 F,Fondations,7,PC
-GE1,Passage des gaines et évacuations ,3,F
+GE1,Passage des gaines et ´evacuations ,3,F
 DRC,Dalle rez de chaussée,7,GE1
 MP,Murs porteurs ,14,DRC
 DP,Dalles plafond ,7,MP
-GE2,Passage gaines et évacuation,3,DP
+GE2,Passage gaines et ´evacuation,3,DP
 T,Toiture,14,GE2
 FE,Fenêtres,7,T
 PE,Portes extèrieures,3,T C
