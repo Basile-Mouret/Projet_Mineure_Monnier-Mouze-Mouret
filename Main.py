@@ -2,9 +2,17 @@
 
 
 class graphe :
-    def __init__(self, noeuds : set, arcs : dict[tuple : tuple[int,list[tuple]]]) -> None:
+    def __init__(self, noeuds : set, arcs : list[tuple[int,int,int]]) -> None:
+        """_summary_
+
+        Args:
+            noeuds (set): _description_
+            arcs (_type_): _description_
+        """
+        
         self.noeuds = noeuds
         self.arcs = {n : [a[1] for a in arcs if a[0] == n] for n in noeuds}
+        #self.poids = {n : [a[2] for a in arcs if a[0] == n] for n in noeuds}
     
 
     def parcoursLargeur(self, s : int) -> list:
@@ -52,9 +60,8 @@ class graphe :
         file.write(tex)
         file.close()
         
-    #Guile
+    #Guille
     def contient_cycle(self):
- 
         for noeud_depart in self.noeuds:
             pile = [noeud_depart]
             parcours = []
@@ -107,10 +114,9 @@ def to_csv(name_csv_file: str, fieldnames:list[str], rows:list[list[str]]) -> No
         rows(list[list[str]]): liste des lignes (liste de colonnes)
     """
     with open(name_csv_file + ".csv" ,'w', encoding="utf-8") as csvfile:
-        csvwriter=csv.writer(csvfile,delimiter=',',quoting=csv.QUOTE_ALL)
+        csvwriter=csv.writer(csvfile,delimiter=',')
         csvwriter.writerow(fieldnames)
         for r in rows:
-            print(r)
             csvwriter.writerow(r)
     
     
@@ -129,7 +135,7 @@ def csv_to_graphe(nom_fichier:str) -> graphe:
         for ligne in file:
             s=ligne.split(',')
             noeud = noeud  | {s[0]}
-            arcs.append(couple(s))
+            arcs += couple(s)
         return graphe(noeud,arcs)
             
 def couple(s:list)->tuple:
@@ -152,29 +158,25 @@ def couple(s:list)->tuple:
                 s2.append((precedents[i],s[0],s[2]))
             return s2
         
-"""def csv_to_graphe_b(nom_fichier:str) -> graphe:
+def csv_to_graphe_b(nom_fichier:str) -> graphe:
     with open(nom_fichier+'.csv','r',encoding='utf8') as file:
         noeud=set()
-        arcs=dict()
+        arcs=[]
         for ligne in file:
             s=ligne.split(',')
             noeud = noeud  | {s[0]}
             print(s)
-            arcs[s[0]] = [n for n in s[3]]#ajouter les arcs
+            for noeud_arrivé in
+            arcs.append(s[3],s[0],s[2])
         return graphe(noeud,arcs)     
-    """
+
         
         
 def main():
     grCours = graphe(set(range (10)),{(5,8),(8,2),(2,9),(4,8),(4,0),(0,7),(7,6),(2,4),(8,1),(1,3),(1,6)})
    
-    
-    to_csv("Graphe",["Identificateur","Description","Durée","Précédente(s)","S0","S1","S2"],[["PM","Permis de construire ",'60',"OG"],
-        ["F","Fondations",'7',"PC"]
-        ,["GE1","Passage des gaines et évacuations ","3","F"],
-        ["DRC","Dalle rez de chaussée","7","GE1"],
-        ["MP","Murs porteurs ","14","DRC"],
-        ["DP","Dalles plafond ","7","MP"],
+    """
+    to_csv("Graphe",["Identificateur","Description","Durée","Précédente(s)","S0","S1","S2"],[["PM","Permis de construire ",'60',"OG"],["F","Fondations",'7',"PC"],["GE1","Passage des gaines et évacuations ","3","F"],["DRC","Dalle rez de chaussée","7","GE1"],["MP","Murs porteurs ","14","DRC"],["DP","Dalles plafond ","7","MP"],
         ["GE2","Passage gaines et évacuation","3","DP"],
         ["T","Toiture","14","GE2"],
         ["FE","Fenêtres","7","T"],
@@ -193,7 +195,7 @@ def main():
         ["S","Serrurerie","3","P CM"],
         ["R1","Revêtement des sols (moquettes) ","2","C S"],
         ["R","Réception de la maison ","0.5","MP S"]]) 
-    
+    """
     grph = csv_to_graphe("Graphe")
     grCours.géné_lateX()
     print(grph.noeuds)
