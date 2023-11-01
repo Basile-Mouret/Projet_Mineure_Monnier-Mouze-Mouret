@@ -1,4 +1,4 @@
-
+import math
 
 
 class Graphe :
@@ -11,11 +11,11 @@ class Graphe :
         """
         
         self.noeuds = noeuds
-        self.arcs = {n : [a[1] for a in arcs if a[0] == n] for n in noeuds}
-        self.poids = {n : [a[2] for a in arcs if a[0] == n] for n in noeuds}
+        self.adj = {n : [a[1] for a in arcs if a[0] == n] for n in noeuds}
+        self.poids = {(a[0],a[1]) : float(a[2]) for a in arcs}
     
     def __str__(self) -> str:
-        return self.arcs
+        return self.adj
     def parcoursLargeur(self, s : int) -> list:
         """parcours d'un Graphe depuis un noeud s
 
@@ -27,7 +27,7 @@ class Graphe :
         parcours = [s]
         while len(file)!=0:
             n=file.pop(0)
-            for i in self.arcs[n]:
+            for i in self.adj[n]:
                 if i not in parcours:
                     parcours.append(i)
                     file.append(i)
@@ -44,7 +44,7 @@ class Graphe :
         while len(pile)!=0:
             n= pile.pop(-1)
             parcours.append(n)
-            for i in self.arcs[n]:
+            for i in self.adj[n]:
                 if i not in parcours:
                     pile.append(i)
             
@@ -53,8 +53,8 @@ class Graphe :
     def géné_lateX(self):
         tex = "\documentclass{article}\n\\usepackage[utf8]{inputenc}\n\\usepackage[pdf]{graphviz}\n\\usepackage[autosize]{dot2texi}\n\\usepackage{tikz}\n\\usetikzlibrary{shapes,arrows}\n\\begin{document}"
         tex += "\n\\begin{dot2tex}[neato,options=-tmath,scale=0.5]digraph grours {rankdir=LR;\n"
-        for arc in self.arcs:
-            for i in self.arcs[arc]:
+        for arc in self.adj:
+            for i in self.adj[arc]:
                 tex+=f"{arc} -> {i};"
         tex += "\n\\end{dot2tex}\n\end{document}"
         file = open("Latex/latex.tex", "w")
@@ -69,7 +69,7 @@ class Graphe :
             while len(pile)!=0:
                 n = pile.pop(0)
                 parcours.append(n)
-                for i in self.arcs[n]:
+                for i in self.adj[n]:
                     if i not in parcours:
                         pile.append(i)
                     else:
@@ -137,7 +137,8 @@ def csv_to_Graphe(nom_fichier:str) -> Graphe:
         for ligne in file:
             s=ligne.split(',')
             noeud = noeud  | {s[0]}
-            arcs += couple(s)
+            if len(s)>3:
+                arcs += couple(s)
         return Graphe(noeud,arcs)
               
 def couple(s:list)->tuple:
@@ -155,20 +156,36 @@ def couple(s:list)->tuple:
             s2.append((precedents[i],s[0],s[2]))
         return s2
 
-def Dijkstra(g : Graphe, s : int, w : dict[tuple[int,int],int]):
-    assert s in g.noeuds
-    pred = {n : None for n in g.noeuds}
-    dict_dist_source = {n : 0 if n==0 else 99999 for n in g.noeuds}
-    D = g.noeuds
-    while D != set():
-        new_dict = {k : dict_dist_source[k] for k in in D}
-        source_courante = min(new_dict, key=new_dict.get)
-        D = D - {source_courante}
-        for n_dist in g.adj[source_courante]:
-            if dict_dist_source[n_dist]> dict_dist_source[source_courante]+ w[source_courante, n_dist]:
-                dict_dist_source[n_dist] = dict_dist_source[source_courante] + w[source_courante, n_dist]
+def Dijkstra(g : Graphe, n_départ : str,  poids : dict[tuple[int,int],int]):
+    assert n_départ in g.noeuds
+    pred = {n : None for n in g.noeuds}#dictionnaire des prédécesseur du noeud dans le chemin le plus rapide jusqu'à l'origine
+    dict_dist_source = {n : 0 if n==n_départ else math.inf for n in g.noeuds}#dictionnaire des distance depuis la source
+    noeuds_restants = g.noeuds#noueds qui n'ont pas encore été parcourus
+    while noeuds_restants != set():#tant que tout les noeuds n'ont pas été parcourus
+        new_dict = {k : dict_dist_source[k] for k in noeuds_restants}#dictionnaire des distance ne contenant que les noeuds non parcourus
+        source_courante = min(new_dict, key=new_dict.get)#le prochain noeuds a être analysé est le plus proche des noeuds qui n'a pas été parcourus
+        noeuds_restants = noeuds_restants - {source_courante}#on l'enleve des noeuds restants
+        for n_dist in g.adj[source_courante]:#pour chaque arcs depuis la source courante
+            if dict_dist_source[n_dist]> dict_dist_source[source_courante]+ poids[source_courante, n_dist]:#si le chemin par la source courante est plus rapide, choisir celui ci
+                dict_dist_source[n_dist] = dict_dist_source[source_courante] + poids[source_courante, n_dist]
                 pred[n_dist] = source_courante
-    return (pred,dict_dist_source)
+    return (pred,dict_dist_source)#on retourne la liste des prédécesseur et des durées minimales avant le commancement d'une tâche
+
+
+def Dijkstra_neg(g : Graphe, n_départ : str,  poids : dict[tuple[int,int],int]):
+    assert n_départ in g.noeuds
+    pred = {n : None for n in g.noeuds}#dictionnaire des prédécesseur du noeud dans le chemin le plus rapide jusqu'à l'origine
+    dict_dist_source = {n : 0 if n==n_départ else math.inf for n in g.noeuds}#dictionnaire des distance depuis la source
+    noeuds_restants = g.noeuds#noueds qui n'ont pas encore été parcourus
+    while noeuds_restants != set():#tant que tout les noeuds n'ont pas été parcourus
+        new_dict = {k : dict_dist_source[k] for k in noeuds_restants}#dictionnaire des distance ne contenant que les noeuds non parcourus
+        source_courante = min(new_dict, key=new_dict.get)#le prochain noeuds a être analysé est le plus proche des noeuds qui n'a pas été parcourus
+        noeuds_restants = noeuds_restants - {source_courante}#on l'enleve des noeuds restants
+        for n_dist in g.adj[source_courante]:#pour chaque arcs depuis la source courante
+            if dict_dist_source[n_dist]> dict_dist_source[source_courante]- poids[source_courante, n_dist]:#si le chemin par la source courante est plus rapide, choisir celui ci
+                dict_dist_source[n_dist] = dict_dist_source[source_courante] - poids[source_courante, n_dist]
+                pred[n_dist] = source_courante
+    return (pred,dict_dist_source)#on retourne la liste des prédécesseur et des durées minimales avant le commancement d'une tâche
 
 
 
@@ -205,9 +222,12 @@ def main():
     
     grph = csv_to_Graphe("Graphe")
     print(grph.noeuds)
-    print(grph.arcs)
+    print(grph.adj)
+    print(grph.poids)
     grph.géné_lateX()
-    print(Dijkstra(grph,"PM",))
+    print(Dijkstra(grph,"PC",grph.poids))
+    print(Dijkstra_neg(grph,"PC",grph.poids))
+    
     
     
     
