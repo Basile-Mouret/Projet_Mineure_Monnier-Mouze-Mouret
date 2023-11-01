@@ -1,7 +1,7 @@
 
 
 
-class graphe :
+class Graphe :
     def __init__(self, noeuds : set, arcs : list[tuple[int,int,int]]) -> None:
         """_summary_
 
@@ -17,7 +17,7 @@ class graphe :
     def __str__(self) -> str:
         return self.arcs
     def parcoursLargeur(self, s : int) -> list:
-        """parcours d'un graphe depuis un noeud s
+        """parcours d'un Graphe depuis un noeud s
 
         Args:
             s (int): noeud de départ
@@ -34,7 +34,7 @@ class graphe :
         return parcours
 
     def parcoursProfondeur( self, s : int) -> list:
-        """parcours d'un graphe depuis un noeud s
+        """parcours d'un Graphe depuis un noeud s
         Args:
             s (int): noeud de départ
         """
@@ -121,15 +121,15 @@ def to_csv(name_csv_file: str, fieldnames:list[str], rows:list[list[str]]) -> No
             csvwriter.writerow(r)
     
     
-def csv_to_graphe(nom_fichier:str) -> graphe:  
-    """_summary_J'ai repris exactement ton code,n,
+def csv_to_Graphe(nom_fichier:str) -> Graphe:  
+    """J'ai repris exactement ton code,
     t'avais une condition qui ne servais a rien dans couple (if len(s[3]==1)) car elle est bien traitée dans le split
     j'ai enlevé la condition du OG, car sinon il auriat fallu le mettre dans le manuel d'utilisation, c'est pas fou
     Args:
         nom_fichier (str): nom fichier à convertir
 
     Returns:
-        graphe: graphe issu du fichier.
+        Graphe: Graphe issu du fichier.
     """
     with open(nom_fichier+'.csv','r',encoding='utf8') as file:
         noeud=set()
@@ -138,7 +138,7 @@ def csv_to_graphe(nom_fichier:str) -> graphe:
             s=ligne.split(',')
             noeud = noeud  | {s[0]}
             arcs += couple(s)
-        return graphe(noeud,arcs)
+        return Graphe(noeud,arcs)
               
 def couple(s:list)->tuple:
     """retourne tout les arcs possibles relatif à une certaine tâche sous la forme de tuple(precedents,arrivée,durée)
@@ -154,9 +154,27 @@ def couple(s:list)->tuple:
         for i in range(len(precedents)):
             s2.append((precedents[i],s[0],s[2]))
         return s2
-        
+
+def Dijkstra(g : Graphe, s : int, w : dict[tuple[int,int],int]):
+    assert s in g.noeuds
+    pred = {n : None for n in g.noeuds}
+    dict_dist_source = {n : 0 if n==0 else 99999 for n in g.noeuds}
+    D = g.noeuds
+    while D != set():
+        new_dict = {k : dict_dist_source[k] for k in in D}
+        source_courante = min(new_dict, key=new_dict.get)
+        D = D - {source_courante}
+        for n_dist in g.adj[source_courante]:
+            if dict_dist_source[n_dist]> dict_dist_source[source_courante]+ w[source_courante, n_dist]:
+                dict_dist_source[n_dist] = dict_dist_source[source_courante] + w[source_courante, n_dist]
+                pred[n_dist] = source_courante
+    return (pred,dict_dist_source)
+
+
+
+
 def main():
-    #grCours = graphe(set(range (10)),{(5,8),(8,2),(2,9),(4,8),(4,0),(0,7),(7,6),(2,4),(8,1),(1,3),(1,6)})
+    #grCours = Graphe(set(range (10)),{(5,8),(8,2),(2,9),(4,8),(4,0),(0,7),(7,6),(2,4),(8,1),(1,3),(1,6)})
    
     
     to_csv("Graphe2",["Identificateur","Description","Durée","Précédente(s)","S0","S1","S2"],
@@ -185,13 +203,15 @@ def main():
         ["R1","Revêtement des sols (moquettes) ","2","C S"],
         ["R","Réception de la maison ","0.5","MP S"]]) 
     
-    grph = csv_to_graphe("Graphe")
+    grph = csv_to_Graphe("Graphe")
     print(grph.noeuds)
     print(grph.arcs)
     grph.géné_lateX()
+    print(Dijkstra(grph,"PM",))
+    
+    
     
 if __name__ == "__main__":
     main()
-
 
 
