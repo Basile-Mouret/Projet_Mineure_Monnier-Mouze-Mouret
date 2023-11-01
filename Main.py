@@ -12,9 +12,10 @@ class graphe :
         
         self.noeuds = noeuds
         self.arcs = {n : [a[1] for a in arcs if a[0] == n] for n in noeuds}
-        #self.poids = {n : [a[2] for a in arcs if a[0] == n] for n in noeuds}
+        self.poids = {n : [a[2] for a in arcs if a[0] == n] for n in noeuds}
     
-
+    def __str__(self) -> str:
+        return self.arcs
     def parcoursLargeur(self, s : int) -> list:
         """parcours d'un graphe depuis un noeud s
 
@@ -121,8 +122,9 @@ def to_csv(name_csv_file: str, fieldnames:list[str], rows:list[list[str]]) -> No
     
     
 def csv_to_graphe(nom_fichier:str) -> graphe:  
-    """_summary_
-
+    """_summary_J'ai repris exactement ton code,n,
+    t'avais une condition qui ne servais a rien dans couple (if len(s[3]==1)) car elle est bien traitée dans le split
+    j'ai enlevé la condition du OG, car sinon il auriat fallu le mettre dans le manuel d'utilisation, c'est pas fou
     Args:
         nom_fichier (str): nom fichier à convertir
 
@@ -137,7 +139,7 @@ def csv_to_graphe(nom_fichier:str) -> graphe:
             noeud = noeud  | {s[0]}
             arcs += couple(s)
         return graphe(noeud,arcs)
-            
+              
 def couple(s:list)->tuple:
     """retourne tout les arcs possibles relatif à une certaine tâche sous la forme de tuple(precedents,arrivée,durée)
     Args:
@@ -146,37 +148,24 @@ def couple(s:list)->tuple:
     Returns:
         tuple: retourne les arcs du noeuds de la i-ème ligne
     """
-    s2=[]
-    if s[3]=="OG":
-        return None
-    else:
-        if len(s[3])==1:
-            return (s[3],s[0],s[2])
-        else:
-            precedents=s[3].split()
-            for i in range(len(precedents)):
-                s2.append((precedents[i],s[0],s[2]))
-            return s2
-        
-def csv_to_graphe_b(nom_fichier:str) -> graphe:
-    with open(nom_fichier+'.csv','r',encoding='utf8') as file:
-        noeud=set()
-        arcs=[]
-        for ligne in file:
-            s=ligne.split(',')
-            noeud = noeud  | {s[0]}
-            print(s)
-            for noeud_arrivé in
-            arcs.append(s[3],s[0],s[2])
-        return graphe(noeud,arcs)     
-
-        
+    s2=list()
+    if len(s)>=4:
+        precedents=s[3].split()
+        for i in range(len(precedents)):
+            s2.append((precedents[i],s[0],s[2]))
+        return s2
         
 def main():
-    grCours = graphe(set(range (10)),{(5,8),(8,2),(2,9),(4,8),(4,0),(0,7),(7,6),(2,4),(8,1),(1,3),(1,6)})
+    #grCours = graphe(set(range (10)),{(5,8),(8,2),(2,9),(4,8),(4,0),(0,7),(7,6),(2,4),(8,1),(1,3),(1,6)})
    
-    """
-    to_csv("Graphe",["Identificateur","Description","Durée","Précédente(s)","S0","S1","S2"],[["PM","Permis de construire ",'60',"OG"],["F","Fondations",'7',"PC"],["GE1","Passage des gaines et évacuations ","3","F"],["DRC","Dalle rez de chaussée","7","GE1"],["MP","Murs porteurs ","14","DRC"],["DP","Dalles plafond ","7","MP"],
+    
+    to_csv("Graphe2",["Identificateur","Description","Durée","Précédente(s)","S0","S1","S2"],
+        [["PM","Permis de construire ",'60'],
+         ["F","Fondations",'7',"PC"],
+         ["GE1","Passage des gaines et évacuations ","3","F"],
+         ["DRC","Dalle rez de chaussée","7","GE1"],
+         ["MP","Murs porteurs ","14","DRC"],
+         ["DP","Dalles plafond ","7","MP"],
         ["GE2","Passage gaines et évacuation","3","DP"],
         ["T","Toiture","14","GE2"],
         ["FE","Fenêtres","7","T"],
@@ -195,11 +184,11 @@ def main():
         ["S","Serrurerie","3","P CM"],
         ["R1","Revêtement des sols (moquettes) ","2","C S"],
         ["R","Réception de la maison ","0.5","MP S"]]) 
-    """
+    
     grph = csv_to_graphe("Graphe")
-    grCours.géné_lateX()
     print(grph.noeuds)
     print(grph.arcs)
+    grph.géné_lateX()
     
 if __name__ == "__main__":
     main()

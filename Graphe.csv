@@ -1,5 +1,5 @@
 Identificateur,Description,Durée,Précédente(s),S0,S1,S2
-PM,Permis de construire ,60,OG
+PC,Permis de construire ,60,OG
 F,Fondations,7,PC
 GE1,Passage des gaines et évacuations ,3,F
 DRC,Dalle rez de chaussée,7,GE1
