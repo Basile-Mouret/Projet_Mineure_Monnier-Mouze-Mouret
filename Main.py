@@ -1,6 +1,3 @@
-
-
-
 class graphe :
     def __init__(self, noeuds:set, arcs:list[tuple]) -> None:
         self.noeuds = noeuds
