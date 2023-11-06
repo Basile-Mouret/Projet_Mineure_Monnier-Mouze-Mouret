@@ -101,6 +101,7 @@ def to_csv(name_csv_file: str, fieldnames:list[str], rows:list[list[str]]) -> No
     
 def csv_to_Graphe(nom_fichier:str) -> Graphe:  
     """
+    Creer et renvois le graphe associé à un fichier csv.
     Args:
         nom_fichier (str): nom fichier à convertir
 
