@@ -3,7 +3,7 @@ import math
 
 class Graphe :
     def __init__(self, noeuds : set, arcs : list[tuple[int,int,int]]) -> None:
-        """_summary_
+        """rajouter les descriptions
 
         Args:
             noeuds (set): _description_
@@ -51,15 +51,21 @@ class Graphe :
         return parcours
     
     def géné_lateX(self):
-        tex = "\documentclass{article}\n\\usepackage[utf8]{inputenc}\n\\usepackage[pdf]{graphviz}\n\\usepackage[autosize]{dot2texi}\n\\usepackage{tikz}\n\\usetikzlibrary{shapes,arrows}\n\\begin{document}"
-        tex += "\n\\begin{dot2tex}[neato,options=-tmath,scale=0.5]digraph grours {rankdir=LR;\n"
+        tex = "\n\\begin{dot2tex}[neato,options=-tmath,scale=0.5]digraph grours {rankdir=LR;\n"
         for arc in self.adj:
             for i in self.adj[arc]:
                 tex+=f"{arc} -> {i};"
-        tex += "\n\\end{dot2tex}\n\end{document}"
+        tex += "}\n\\end{dot2tex}"
+        return tex
+    """
+    def dessiner_graphe(self):
+        tex = "\documentclass{article}\n\\usepackage[utf8]{inputenc}\n\\usepackage[pdf]{graphviz}\n\\usepackage[autosize]{dot2texi}\n\\usepackage{tikz}\n\\usetikzlibrary{shapes,arrows}\n\\begin{document}"
+        #si on veut écrire le latex dans un fichier dédié
+        tex+= self.géné_lateX()
+        tex+="\n\end{document}"
         file = open("Latex/latex.tex", "w")
         file.write(tex)
-        file.close()
+        file.close()"""
         
     #Guille
     def contient_cycle(self):
@@ -227,6 +233,7 @@ def main():
     grph.géné_lateX()
     print(Dijkstra(grph,"PC",grph.poids))
     print(Dijkstra_neg(grph,"PC",grph.poids))
+    print(grph.contient_cycle())
     
     
     
