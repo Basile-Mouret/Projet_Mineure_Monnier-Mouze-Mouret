@@ -99,7 +99,7 @@ def to_csv(name_csv_file: str, fieldnames:list[str], rows:list[list[str]]) -> No
             csvwriter.writerow(r)
     
     
-def csv_to_Graphe(nom_fichier:str) -> Graphe:  
+'''def csv_to_Graphe(nom_fichier:str) -> Graphe:  
     """J'ai repris exactement ton code,
     t'avais une condition qui ne servais a rien dans couple (if len(s[3]==1)) car elle est bien traitée dans le split
     j'ai enlevé la condition du OG, car sinon il auriat fallu le mettre dans le manuel d'utilisation, c'est pas fou
@@ -132,9 +132,57 @@ def couple(s:list)->tuple:
         precedents=s[3].split()
         for i in range(len(precedents)):
             s2.append((precedents[i],s[0],s[2]))
-        return s2
+        return s2'''
+def csv_to_Graphe(nom_fichier:str) -> Graphe:  
+    """
+    Creer et renvois le graphe associé à un fichier csv.
+    Args:
+        nom_fichier (str): nom fichier à convertir
 
-def Dijkstra(g : Graphe, n_départ : str,  poids : dict[tuple[int,int],int]):
+    Returns:
+        Graphe: Graphe issu du fichier.
+    """
+    Dict_poids={}
+    with open(nom_fichier+'.csv','r',encoding='utf8') as file:
+        noeud=set()
+        arcs=[]
+        for ligne in file:
+            s=ligne.split(',')
+            noeud = noeud  | {s[0]}
+            Dict_poids[s[0]] = float(s[2])
+            if len(s)>3:
+                #cple=couple(s)
+                #arcs += cple[0]
+                #Dict_poids[cple[1]]=cple[2]
+                arcs += couple(s)
+        return Graphe(noeud,arcs,Dict_poids)
+    
+    
+    
+def couple(s:list)->tuple:
+    """retourne tout les arcs possibles relatif à une certaine tâche sous la forme de tuple(precedents,arrivée,durée)
+    Args:
+        s (list): éléments de la ligne sous fortme de liste
+
+    Returns:
+        tuple: retourne les arcs du noeuds de la i-ème ligne
+    """
+    arcs=[]
+    if s[3]=='Précédente(s)' :
+        #return [[],'Tâche','Poids']
+        return []
+    else:
+        precedents=s[3].split()
+        for i in range(len(precedents)):
+            arcs.append((precedents[i],s[0]))
+        #return [arcs,s[0],s[2]]
+        return arcs
+
+
+
+
+
+def Dijkstra(g : Graphe, n_départ : str,  poids : dict[tuple[int,int],int], neg = False):
     assert n_départ in g.noeuds
     pred = {n : None for n in g.noeuds}#dictionnaire des prédécesseur du noeud dans le chemin le plus rapide jusqu'à l'origine
     dict_dist_source = {n : 0 if n==n_départ else math.inf for n in g.noeuds}#dictionnaire des distance depuis la source
@@ -144,26 +192,27 @@ def Dijkstra(g : Graphe, n_départ : str,  poids : dict[tuple[int,int],int]):
         source_courante = min(new_dict, key=new_dict.get)#le prochain noeuds a être analysé est le plus proche des noeuds qui n'a pas été parcourus
         noeuds_restants = noeuds_restants - {source_courante}#on l'enleve des noeuds restants
         for n_dist in g.adj[source_courante]:#pour chaque arcs depuis la source courante
-            if dict_dist_source[n_dist]> dict_dist_source[source_courante]+ poids[source_courante, n_dist]:#si le chemin par la source courante est plus rapide, choisir celui ci
-                dict_dist_source[n_dist] = dict_dist_source[source_courante] + poids[source_courante, n_dist]
+            if dict_dist_source[n_dist]> dict_dist_source[source_courante] + ((-1)**neg )* poids[source_courante]:#si le chemin par la source courante est plus rapide, choisir celui ci
+                dict_dist_source[n_dist] = dict_dist_source[source_courante] + ((-1)**neg )* poids[source_courante]
                 pred[n_dist] = source_courante
     return (pred,dict_dist_source)#on retourne la liste des prédécesseur et des durées minimales avant le commancement d'une tâche
 
 
-def Dijkstra_neg(g : Graphe, n_départ : str,  poids : dict[tuple[int,int],int]):
-    assert n_départ in g.noeuds
-    pred = {n : None for n in g.noeuds}#dictionnaire des prédécesseur du noeud dans le chemin le plus rapide jusqu'à l'origine
-    dict_dist_source = {n : 0 if n==n_départ else math.inf for n in g.noeuds}#dictionnaire des distance depuis la source
-    noeuds_restants = g.noeuds#noueds qui n'ont pas encore été parcourus
-    while noeuds_restants != set():#tant que tout les noeuds n'ont pas été parcourus
-        new_dict = {k : dict_dist_source[k] for k in noeuds_restants}#dictionnaire des distance ne contenant que les noeuds non parcourus
-        source_courante = min(new_dict, key=new_dict.get)#le prochain noeuds a être analysé est le plus proche des noeuds qui n'a pas été parcourus
-        noeuds_restants = noeuds_restants - {source_courante}#on l'enleve des noeuds restants
-        for n_dist in g.adj[source_courante]:#pour chaque arcs depuis la source courante
-            if dict_dist_source[n_dist]> dict_dist_source[source_courante]- poids[source_courante, n_dist]:#si le chemin par la source courante est plus rapide, choisir celui ci
-                dict_dist_source[n_dist] = dict_dist_source[source_courante] - poids[source_courante, n_dist]
-                pred[n_dist] = source_courante
-    return (pred,dict_dist_source)#on retourne la liste des prédécesseur et des durées minimales avant le commancement d'une tâche
+
+
+def chemins_critique(graphe):
+    dico_pred,dico_duree = Dijkstra(graphe,"PC",graphe.poids,neg = True)
+    for tache in dico_duree.keys():
+        dico_duree[tache] *= -1
+    noeuds_critiques = set()
+    noeuds_critiques.add(max(dico_duree,key = dico_duree.get))
+    for n_dep in graphe.adj.keys():
+        for n_arr in graphe.adj[n_dep]:
+            if dico_duree[n_arr]-dico_duree[n_dep] == graphe.poids[n_dep]:
+                noeuds_critiques.add(n_dep)
+    return noeuds_critiques
+
+
 
 
 
@@ -172,7 +221,7 @@ def main():
     #grCours = Graphe(set(range (10)),{(5,8),(8,2),(2,9),(4,8),(4,0),(0,7),(7,6),(2,4),(8,1),(1,3),(1,6)})
    
     
-    to_csv("Graphe2",["Identificateur","Description","Durée","Précédente(s)","S0","S1","S2"],
+    to_csv("G",["Identificateur","Description","Durée","Précédente(s)","S0","S1","S2"],
         [["PM","Permis de construire ",'60'],
          ["F","Fondations",'7',"PC"],
          ["GE1","Passage des gaines et évacuations ","3","F"],
@@ -198,16 +247,15 @@ def main():
         ["R1","Revêtement des sols (moquettes) ","2","C S"],
         ["R","Réception de la maison ","0.5","MP S"]]) 
     
-    grph = csv_to_Graphe("Graphe")
+    grph = csv_to_Graphe("Graphe2")
     print(grph.noeuds)
     print(grph.adj)
     print(grph.poids)
     grph.géné_lateX()
     print(Dijkstra(grph,"PC",grph.poids))
-    print(Dijkstra_neg(grph,"PC",grph.poids))
-    print(grph.contient_cycle())
-    
-    
+    print(Dijkstra(grph,"PC",grph.poids,neg = True))
+    print("le graphe contient un cycle ?" ,grph.contient_cycle())
+    print(chemins_critique(grph))
     
     
 if __name__ == "__main__":

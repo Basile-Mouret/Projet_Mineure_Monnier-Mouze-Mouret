@@ -1,8 +1,0 @@
-Dep < Aut,
-Aut < Arg, Aut < Inv,Aut < Loc,
-Arg < Sp, Arg < Mus,
-Sp < Com,
-Inv < Com, Mus < Com, Loc < Com,
-Loc < Sal, Arg < Sec,
-Sec < Eve, Sal < Eve, Com < Eve,
-Eve < Net, Eve < Bil, Bil < Pay, Net < Fin, Pay < Fin,
