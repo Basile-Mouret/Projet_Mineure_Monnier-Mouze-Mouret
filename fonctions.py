@@ -1,8 +1,9 @@
 import math
+import csv
 
 
 class Graphe :
-    def __init__(self, noeuds : set, arcs : list[tuple[int,int,int]]) -> None:
+    def __init__(self, noeuds : set, arcs : list[tuple[int,int]],poids :dict[str : int]) -> None:
         """rajouter les descriptions
 
         Args:
@@ -12,7 +13,7 @@ class Graphe :
         
         self.noeuds = noeuds
         self.adj = {n : [a[1] for a in arcs if a[0] == n] for n in noeuds}
-        self.poids = {(a[0],a[1]) : float(a[2]) for a in arcs}
+        self.poids = poids
     
     def __str__(self) -> str:
         return self.adj
@@ -82,36 +83,7 @@ class Graphe :
                         return True
         return False
 
-                   
-#a voir si utile
-def arc_present(g, noeud1, noeud2):
-  """
-  Indique s'il existe un arc entre deux points
-  :param neoud1 et noeud2: noeuds entre lesquels on veut savoir s'il existe un arc
-  :return: un booléen (vrai s'il existe un arc entre les deux points, faux sinon)
-  """
-  depart = noeud1
-  arrivee = noeud2
-  file = []
-  visites = {element: False for element in g.noeuds}
-  file.append(depart)
-
-  while file:
-    actuel = file.pop(0)
-    visites[actuel] = True
-    for noeud in g.noeuds:
-      if noeud in g.adj[actuel] and visites[noeud] == False:
-        file.append(noeud)
-        visites[noeud] = True
-        if noeud == arrivee:
-          return True
-  return False
-
-
-  
-  
 #Ben
-import csv
 
 def to_csv(name_csv_file: str, fieldnames:list[str], rows:list[list[str]]) -> None:
     """
