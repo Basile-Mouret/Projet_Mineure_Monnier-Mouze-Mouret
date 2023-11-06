@@ -1,11 +1,82 @@
 \documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage[french]{babel}
 \usepackage[utf8]{inputenc}
-\usepackage[pdf]{graphviz}
-\usepackage[autosize]{dot2texi}
+\usepackage{listings}
+\usepackage{amsmath,amssymb}           
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
 \usepackage{tikz}
-\usetikzlibrary{shapes,arrows}
+\usepackage{pythonhighlight}
+\title{\bf \Huge Manuel d'utilisateur du logiciel PERT}
+\author{Benjamin Monnier\\ Basile Mourret\\ Guillermo Mouze}
+\date{}
 \begin{document}
-\begin{dot2tex}[neato,options=-tmath,scale=0.5]digraph grours {rankdir=LR;
-C1 -> CM;MP -> DP;MP -> R;C -> PE;C -> C1;C -> P;C -> R1;DRC -> MP;IW -> PP;T -> FE;T -> PE;CM -> FC;CM -> S;DP -> GE2;DP -> C;P -> CM;P -> S;IC -> PP;F -> GE1;S -> R1;S -> R;PP -> PM;FC -> CM;FC -> IC;FC -> IW;FC -> IS;GE2 -> T;GE2 -> IE;PC -> F;GE1 -> DRC;FE -> CM;IS -> PP;
-\end{dot2tex}
+\maketitle
+\centerline{\includegraphics{3.png}}
+\section{La méthode PERT}
+La méthode PERT permet d’organiser les tâches de votre projet en fonction de leurs durées respectives et de
+leurs dépendances.
+\\ 
+Ce dernier identifie donc les tâches qui ne doivent souffrir d’aucun retard sous peine de retarder l’ensemble du projet.
+\\\\
+Le PERT est aussi utilisé pour suivre le déroulement de votre projet. On
+peut ainsi reporter les avances et les retards de chaque tâche pour déteminer les changements nécessaire dans la programmation des dates. 
+
+
+\section{Format des données}
+
+Le programme nécéssite un fichier d'entrée comportant les données de type 
+
+\textit{.csv}.
+\\
+Le fichier devra respecter rigoureusement le format ci-dessous.
+Les durées des différentes tâches seront exprimées en jour.
+Chaque tâche sera indiqué sous la forme:
+
+
+\begin{flushleft}
+    \bf
+Identificateur,Description,Durée,Précédente(s)
+\end{flushleft}
+\\
+\underline{EXEMPLE:}
+\\\\
+Le passage des gaines et évacuations (GE1), dont la durée est 3 jours, nécessitant des Fondations (F) au préalable est notée:
+\begin{flushleft}
+    \bf
+  GE1,Passage des gaines et évacuations ,3,F
+\end{flushleft}
+
+Les tâches seront listées sans saut de ligne mais simplement avec un simple retour à la ligne entre elle.
+\\
+Voici un exemple de fichier \textit{.csv} accepté:
+\\\\
+
+\centerline{\includegraphics[height=100]{1.png}}
+\\\\
+
+\section{Comment Procéder}
+Creer votre fichier \textit{tache.csv} avec les tâches de votre projet et placer le fichier \textit{PERT.exe} et votre fichier \textit{tache.csv} dans un même dossier.
+\\
+Lancer le fichier \textit{PERT.exe} et rentrer dans le terminal \textit{tache.csv}.
+\\
+\begin{flushleft}
+    \bf
+Le Tour est joué!
+\end{flushleft}
+Le programme a créé un fichier
+LATEX nommé \textit{Rendu.tex} contenant un résumé de votre projet : 
+\\
+— analyse de faisabilité de l’ordonnancement des tâches.
+\\
+— Les chemins critiques seront explicités sur la visualisation du graphe de tâches.
+\\
+— les comptes rendu d’exécution.
+\\
+— l’historique du projet.
+\\
+Pour l'avoir sous format PDF veuillez compiler le code LateX sur le site Overleaf.com.
+
+
 \end{document}
