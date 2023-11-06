@@ -100,15 +100,14 @@ def to_csv(name_csv_file: str, fieldnames:list[str], rows:list[list[str]]) -> No
     
     
 def csv_to_Graphe(nom_fichier:str) -> Graphe:  
-    """J'ai repris exactement ton code,
-    t'avais une condition qui ne servais a rien dans couple (if len(s[3]==1)) car elle est bien traitée dans le split
-    j'ai enlevé la condition du OG, car sinon il auriat fallu le mettre dans le manuel d'utilisation, c'est pas fou
+    """
     Args:
         nom_fichier (str): nom fichier à convertir
 
     Returns:
         Graphe: Graphe issu du fichier.
     """
+    Dict_poids={}
     with open(nom_fichier+'.csv','r',encoding='utf8') as file:
         noeud=set()
         arcs=[]
@@ -116,8 +115,10 @@ def csv_to_Graphe(nom_fichier:str) -> Graphe:
             s=ligne.split(',')
             noeud = noeud  | {s[0]}
             if len(s)>3:
-                arcs += couple(s)
-        return Graphe(noeud,arcs)
+                cple=couple(s)
+                arcs += cple[0]
+                Dict_poids[cple[1]]=cple[2]
+        return Graphe(noeud,arcs,Dict_poids)
               
 def couple(s:list)->tuple:
     """retourne tout les arcs possibles relatif à une certaine tâche sous la forme de tuple(precedents,arrivée,durée)
@@ -127,13 +128,28 @@ def couple(s:list)->tuple:
     Returns:
         tuple: retourne les arcs du noeuds de la i-ème ligne
     """
-    s2=list()
-    if len(s)>=4:
+    arcs=[]
+    if s[3]=='Précédente(s)' :
+        return [[],'Tâche','Poids']
+    else:
         precedents=s[3].split()
         for i in range(len(precedents)):
-            s2.append((precedents[i],s[0],s[2]))
-        return s2
+            arcs.append((precedents[i],s[0]))
+        return [arcs,s[0],s[2]]
 
+            
+def couple(s:list)->tuple:
+    """retourne tout les arcs possibles relatif à une certaine tâche sous la forme de tuple(precedents,arrivée,durée)
+    Args:
+        s (list): éléments de la ligne sous fortme de liste
+
+    Returns:
+        tuple: retourne les arcs du noeuds de la i-ème ligne
+    """
+    s2=[]
+    if s[3]=='Précédente(s)' :
+        return [[],'Tâche','Poids']
+   
 def Dijkstra(g : Graphe, n_départ : str,  poids : dict[tuple[int,int],int]):
     assert n_départ in g.noeuds
     pred = {n : None for n in g.noeuds}#dictionnaire des prédécesseur du noeud dans le chemin le plus rapide jusqu'à l'origine
