@@ -19,9 +19,8 @@ def rediger_lateX(fichier_csv):
 \\section{Faisabilite du projet}
  '''                                #Faisabilité
     if grph.contient_cycle():
-        pass
-        #return string +"Votre projet n'est pas faisable car il contient un cycle"+"""
-#\\end{document}"""
+        return string +"Votre projet n'est pas faisable car il contient un cycle"+"""
+\\end{document}"""
     string += 'Votre projet ne contient pas de cycle, il est faisable.'
     string += '''
 \\section{Visualisation du projet par un graphe}
@@ -85,4 +84,4 @@ def rediger_rapport(fichier_csv):
     x = open("Analyse.tex","w")
     x.write(string)
     
-rediger_rapport('Graphe3')
+rediger_rapport('Graphe2')

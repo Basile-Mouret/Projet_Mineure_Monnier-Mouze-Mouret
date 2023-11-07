@@ -79,8 +79,7 @@ class Graphe :
                 for i in self.adj[n]:
                     if i not in parcours:
                         pile.append(i)
-                    else:
-                        print(i,n)
+                    elif i == noeud_depart:
                         return True
         return False
 
@@ -98,42 +97,7 @@ def to_csv(name_csv_file: str, fieldnames:list[str], rows:list[list[str]]) -> No
         csvwriter.writerow(fieldnames)
         for r in rows:
             csvwriter.writerow(r)
-    
-    
-'''def csv_to_Graphe(nom_fichier:str) -> Graphe:  
-    """J'ai repris exactement ton code,
-    t'avais une condition qui ne servais a rien dans couple (if len(s[3]==1)) car elle est bien traitée dans le split
-    j'ai enlevé la condition du OG, car sinon il auriat fallu le mettre dans le manuel d'utilisation, c'est pas fou
-    Args:
-        nom_fichier (str): nom fichier à convertir
-
-    Returns:
-        Graphe: Graphe issu du fichier.
-    """
-    with open(nom_fichier+'.csv','r',encoding='utf8') as file:
-        noeud=set()
-        arcs=[]
-        for ligne in file:
-            s=ligne.split(',')
-            noeud = noeud  | {s[0]}
-            if len(s)>3:
-                arcs += couple(s)
-        return Graphe(noeud,arcs)
-              
-def couple(s:list)->tuple:
-    """retourne tout les arcs possibles relatif à une certaine tâche sous la forme de tuple(precedents,arrivée,durée)
-    Args:
-        s (list): éléments de la ligne sous fortme de liste
-
-    Returns:
-        tuple: retourne les arcs du noeuds de la i-ème ligne
-    """
-    s2=list()
-    if len(s)>=4:
-        precedents=s[3].split()
-        for i in range(len(precedents)):
-            s2.append((precedents[i],s[0],s[2]))
-        return s2'''
+ 
 def csv_to_Graphe(nom_fichier:str) -> Graphe:  
     """
     Creer et renvois le graphe associé à un fichier csv.
@@ -157,9 +121,7 @@ def csv_to_Graphe(nom_fichier:str) -> Graphe:
                 #Dict_poids[cple[1]]=cple[2]
                 arcs += couple(s)
         return Graphe(noeud,arcs,Dict_poids)
-    
-    
-    
+
 def couple(s:list)->tuple:
     """retourne tout les arcs possibles relatif à une certaine tâche sous la forme de tuple(precedents,arrivée,durée)
     Args:
@@ -179,10 +141,6 @@ def couple(s:list)->tuple:
         #return [arcs,s[0],s[2]]
         return arcs
 
-
-
-
-
 def Dijkstra(g : Graphe, n_départ : str,  poids : dict[tuple[int,int],int], neg = False):
     assert n_départ in g.noeuds
     pred = {n : None for n in g.noeuds}#dictionnaire des prédécesseur du noeud dans le chemin le plus rapide jusqu'à l'origine
@@ -197,14 +155,23 @@ def Dijkstra(g : Graphe, n_départ : str,  poids : dict[tuple[int,int],int], neg
                 dict_dist_source[n_dist] = dict_dist_source[source_courante] + ((-1)**neg )* poids[source_courante]
                 pred[n_dist] = source_courante
     return (pred,dict_dist_source)#on retourne la liste des prédécesseur et des durées minimales avant le commancement d'une tâche
-
-
-
-
+def Bellman_Ford(g : Graphe, n_départ : str,  poids : dict[tuple[int,int],int], neg = False):
+    dico_pred = {n : None for n in g.noeuds}#dictionnaire des prédécesseur du noeud dans le chemin le plus rapide jusqu'à l'origine
+    dico_dist_source = {n : 0 if n==n_départ else math.inf for n in g.noeuds}#dictionnaire des distance depuis la source
+    for _ in range(len(g.noeuds)-1):
+        for u in g.noeuds:
+            for v in g.adj[u]:
+                if dico_dist_source[u] - g.poids[u]< dico_dist_source[v]:
+                    dico_dist_source[v] = dico_dist_source[u]- g.poids[u]
+                    dico_pred[v] = u
+    
+    return dico_dist_source,dico_pred
 def chemins_critique(graphe):
-    dico_pred,dico_duree = Dijkstra(graphe,"PC",graphe.poids,neg = True)
+    dico_pred,dico_duree = Bellman_Ford(graphe,"PC",graphe.poids,neg = True)
     for tache in dico_duree.keys():
         dico_duree[tache] *= -1
+        
+        
     noeuds_critiques = set()
     noeuds_critiques.add(max(dico_duree,key = dico_duree.get))
     for n_dep in graphe.adj.keys():
@@ -213,15 +180,102 @@ def chemins_critique(graphe):
                 noeuds_critiques.add(n_dep)
     return noeuds_critiques
 
+def parents(graphe):
+    """retrouve les noeuds parents de chaque noeud
+    Returns:
+        dict[noeud:set] : dictionnaire contenant le noeud en indice et son/ces parents
+    """
+    dico_parents = {n : set() for n in graphe.noeuds}
+    for n_d in graphe.noeuds:
+        for n_f in graphe.adj[n_d]:
+            dico_parents[n_f].add(n_d)
+    return dico_parents
 
 
 
+
+
+def forward_pass(graphe) :
+    
+    #forward pass
+    
+    debut_tot = {n : -1 for n in graphe.noeuds}#date de départ minimum
+    fin_tot = {n : -1 for n in graphe.noeuds}#date de fin minimum
+    par = parents(graphe)
+    noeuds_départ  = {n for n in graphe.noeuds if par[n] == set()}
+    file = []
+    for n in noeuds_départ:
+        debut_tot[n] = 0
+        fin_tot[n] = graphe.poids[n]#date de départ minimale
+        file += graphe.adj[n]
+    
+    while len(file)>0:
+        n = file.pop(0)
+        parents_parcourus = True
+        for n_parent in par[n]:
+            if fin_tot[n_parent]<0: parents_parcourus = False
+        
+        if parents_parcourus:
+            file += graphe.adj[n]
+            for n_parent in par[n]:
+                if fin_tot[n_parent]>debut_tot[n]:
+                    debut_tot[n] = fin_tot[n_parent]
+                    fin_tot[n] = fin_tot[n_parent]+graphe.poids[n]
+    return debut_tot,fin_tot    
+    
+def backward_pass(graphe,debut_tot,fin_tot):
+    #backward pass
+
+    debut_tard = {n : math.inf for n in graphe.noeuds}#date de départ maximum
+    fin_tard = {n : math.inf for n in graphe.noeuds}#date de fin minimum
+    par = parents(graphe)
+    noeuds_fin = {n for n in graphe.noeuds if len(graphe.adj[n])==0}#noeud de fin
+    file = []
+    duree_chemin_critique = max(fin_tot.values())
+    for n in noeuds_fin:
+        fin_tard[n] = duree_chemin_critique
+        debut_tard[n] = duree_chemin_critique - graphe.poids[n]#date de départ minimale
+        file += par[n]
+    while len(file)>0:
+        n = file.pop(0)
+        fils_parcourus = True
+        for n_fils in graphe.adj[n]:
+            if fin_tard[n_fils] is None: fils_parcourus = False
+        
+        if fils_parcourus:
+            file += par[n]
+            for n_fils in graphe.adj[n]:
+                if debut_tard[n_fils]<fin_tard[n]:
+                    fin_tard[n] = debut_tard[n_fils]
+                    debut_tard[n] = debut_tard[n_fils]-graphe.poids[n]
+     
+    return debut_tard,fin_tard
 
 
 def main():
     #grCours = Graphe(set(range (10)),{(5,8),(8,2),(2,9),(4,8),(4,0),(0,7),(7,6),(2,4),(8,1),(1,3),(1,6)})
    
+    grph = csv_to_Graphe("G_bas")
+    debut_tot,fin_tot= forward_pass(grph)
+    debut_tard,fin_tard = backward_pass(grph,debut_tot,fin_tot)
+    print(debut_tot)
+    print(fin_tot)
+    print(debut_tard)
+    print(fin_tard)
     
+    """print(grph.noeuds)
+    print(grph.adj)
+    print(grph.poids)"""
+    
+    
+    
+    """print(Dijkstra(grph,"PC",grph.poids))
+    print(Dijkstra(grph,"PC",grph.poids,neg = True))
+    
+    print()
+    print(Bellman_Ford(grph,"PC",grph.poids))
+    print("le graphe contient un cycle ?" ,grph.contient_cycle())
+    print(chemins_critique(grph))
     to_csv("G",["Identificateur","Description","Durée","Précédente(s)","S0","S1","S2"],
         [["PM","Permis de construire ",'60'],
          ["F","Fondations",'7',"PC"],
@@ -247,17 +301,7 @@ def main():
         ["S","Serrurerie","3","P CM"],
         ["R1","Revêtement des sols (moquettes) ","2","C S"],
         ["R","Réception de la maison ","0.5","MP S"]]) 
-    
-    grph = csv_to_Graphe("Graphe3")
-    print(grph.noeuds)
-    print(grph.adj)
-    print(grph.poids)
-    grph.géné_lateX()
-    print(Dijkstra(grph,"PC",grph.poids))
-    print(Dijkstra(grph,"PC",grph.poids,neg = True))
-    print("le graphe contient un cycle ?" ,grph.contient_cycle())
-    print(chemins_critique(grph))
-    
+    """
     
 if __name__ == "__main__":
     main()
