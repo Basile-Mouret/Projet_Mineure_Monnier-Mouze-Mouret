@@ -58,7 +58,7 @@ class Graphe :
                 tex+=f"{arc} -> {i};"
         tex += "}\n\\end{dot2tex}"
         return tex
-    """
+    
     def dessiner_graphe(self):
         tex = "\documentclass{article}\n\\usepackage[utf8]{inputenc}\n\\usepackage[pdf]{graphviz}\n\\usepackage[autosize]{dot2texi}\n\\usepackage{tikz}\n\\usetikzlibrary{shapes,arrows}\n\\begin{document}"
         #si on veut écrire le latex dans un fichier dédié
@@ -66,7 +66,7 @@ class Graphe :
         tex+="\n\end{document}"
         file = open("Latex/latex.tex", "w")
         file.write(tex)
-        file.close()"""
+        file.close()
         
     #Guille
     def contient_cycle(self):
@@ -80,6 +80,7 @@ class Graphe :
                     if i not in parcours:
                         pile.append(i)
                     else:
+                        print(i,n)
                         return True
         return False
 
@@ -247,7 +248,7 @@ def main():
         ["R1","Revêtement des sols (moquettes) ","2","C S"],
         ["R","Réception de la maison ","0.5","MP S"]]) 
     
-    grph = csv_to_Graphe("Graphe2")
+    grph = csv_to_Graphe("Graphe3")
     print(grph.noeuds)
     print(grph.adj)
     print(grph.poids)

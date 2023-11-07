@@ -12,5 +12,10 @@
 
 
 \section{Faisabilite du projet}
- Votre projet n'est pas faisable car il contient un cycle
+ Votre projet ne contient pas de cycle, il est faisable.
+\section{Visualisation du projet par un graphe}
+
+\begin{dot2tex}[neato,options=-tmath,scale=0.5]digraph grours {rankdir=LR;
+DP -> GE2;F -> GE1;GE2 -> T;GE1 -> DRC;MP -> DP;PC -> F;DRC -> MP;T -> FE;}
+\end{dot2tex}\medskip
 \end{document}
