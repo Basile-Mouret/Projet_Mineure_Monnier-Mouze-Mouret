@@ -62,7 +62,7 @@ def csv_to_Graphe(nom_fichier:str) -> Graphe:
             s=ligne.split(',')
             noeud = noeud  | {s[0]}
             Dict_poids[s[0]] = float(s[2])
-            if len(s)>3:
+            if not s[3] == "":
                 #cple=couple(s)
                 #arcs += cple[0]
                 #Dict_poids[cple[1]]=cple[2]

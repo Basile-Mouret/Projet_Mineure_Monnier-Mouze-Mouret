@@ -27,11 +27,9 @@ def rediger_lateX(fichier_csv):
     
     string += '''
 \\section{Visualisation du projet par un graphe}
-'''
+\\subsection{Graphe image}
+Les chemins critiques sont marques en rouge dans le graphe.'''
                                     #Visualisation
-                                    
-                                    
-    
     string += '\n\\begin{dot2tex}[options=-tmath,scale='+str(7/len(grph.noeuds))+']digraph grours '
     string+= "{rankdir=LR;\n"
     for noeud in grph.noeuds:
@@ -64,14 +62,16 @@ Identifiant & Description \\tabularnewline
 '''
 """
     string += '''
-\\begin{tabular}{|l|M|N|}
+\\subsection{Tableau des dates}
+\\newline{}
+\\begin{tabular}{|l|M|N|C|}
 \hline 
-Tâche & Date de début au plus tôt & Date de début au plus tard \\tabularnewline
+Tache & Date de debut au plus tot & Date de fin au plus tard & Criticalite\\tabularnewline
 \\hline
 
 '''
     for noeud in n_triés:
-      string += str(noeud) + '&' + str(dicotot[noeud]) + '&' + str(dicotard[noeud]) + '''\\tabularnewline
+      string += str(noeud) + '&' + str(dicotot[noeud]) + '&' + str(dicotard[noeud]) + '&' + ('critique'if noeud in n_crit else 'non critique') + '''\\tabularnewline
 \\hline
 '''
     string += '''
@@ -98,7 +98,14 @@ Tâche & Date de début au plus tôt & Date de début au plus tard \\tabularnewl
 
 def rediger_rapport(fichier_csv):
     string = rediger_lateX(fichier_csv)
-    x = open("Analyse.tex","w")
-    x.write(string)
+    with  open("Analyse.tex","w") as file:
+        file.write(string)
     
-rediger_rapport('Graphe3')
+
+
+def main():
+    
+    fichier_graphe = input("quel est le nom de votre fichier (sans le .csv) : ")
+    rediger_rapport(fichier_graphe)
+
+if __name__ == "__main__":main()

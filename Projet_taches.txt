@@ -6,6 +6,8 @@ Autres :
 Ben :
 - faire des fichier csv pour tester
 - ajouter la condition pour la premiere ligne des graphe (les titres du csv)
+- 
+
 
 Bas : 
 - déterminer les chemins critiques
