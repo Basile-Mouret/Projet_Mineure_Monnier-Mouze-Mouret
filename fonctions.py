@@ -3,18 +3,17 @@ import csv
 
 
 class Graphe :
-    def __init__(self, noeuds : set, arcs : list[tuple[int,int]],poids :dict[str : int]) -> None:
+    def __init__(self, noeuds : set, arcs : list[tuple[int,int]],poids :dict[str : int],description:dict[str:str]) -> None:
         """rajouter les descriptions
 
         Args:
             noeuds (set): _description_
             arcs (_type_): _description_
         """
-        
         self.noeuds = noeuds
         self.adj = {n : [a[1] for a in arcs if a[0] == n] for n in noeuds}
         self.poids = poids
-    
+        self.description=description
     #Guille
     def contient_cycle(self):
         for noeud_depart in self.noeuds:
@@ -55,6 +54,7 @@ def csv_to_Graphe(nom_fichier:str,k:int=0) -> Graphe:
         Graphe: Graphe issu du fichier.
     """
     Dict_poids={}
+    Dict_description={}
     with open(nom_fichier+'.csv','r',encoding='utf8') as file:
         noeud=set()
         arcs=[]
@@ -64,9 +64,10 @@ def csv_to_Graphe(nom_fichier:str,k:int=0) -> Graphe:
                 s=ligne.split(',')
                 noeud = noeud  | {s[0]}
                 Dict_poids[s[0]] = float(s[2])
+                Dict_description[s[0]]=s[1]
                 if len(s)>3 and not s[3]=='':
                         arcs += couple(s)
-            return(Graphe(noeud,arcs,Dict_poids),csv_to_Graphe(nom_fichier,k+1),csv_to_Graphe(nom_fichier,k+2),csv_to_Graphe(nom_fichier,k+3))
+            return(Graphe(noeud,arcs,Dict_poids,Dict_description),csv_to_Graphe(nom_fichier,k+1),csv_to_Graphe(nom_fichier,k+2),csv_to_Graphe(nom_fichier,k+3))
         else:
             for ligne in file:
                 s=ligne.split(',')
@@ -75,11 +76,12 @@ def csv_to_Graphe(nom_fichier:str,k:int=0) -> Graphe:
                 else:
                     noeud = noeud  | {s[0]}
                     Dict_poids[s[0]] = float(s[3+k])
+                    Dict_description[s[0]]=s[1]
                     if len(s)>3 and not s[3]=='':
                             arcs += couple(s)
                     else:
                         pass
-            return Graphe(noeud,arcs,Dict_poids)
+            return Graphe(noeud,arcs,Dict_poids,Dict_description)
 
 def couple(s:list)->tuple:
     """retourne tout les arcs possibles relatif à une certaine tâche sous la forme de tuple(precedents,arrivée,durée)
@@ -190,7 +192,10 @@ def main():
     #grCours = Graphe(set(range (10)),{(5,8),(8,2),(2,9),(4,8),(4,0),(0,7),(7,6),(2,4),(8,1),(1,3),(1,6)})
    
     grph = csv_to_Graphe("G_bas")
-
+    print(grph[0].poids)
+    print(grph[1].poids)
+    print(grph[0].description)
+    print(grph[1].description)
     """print(grph.noeuds)
     print(grph.adj)
     print(grph.poids)"""
