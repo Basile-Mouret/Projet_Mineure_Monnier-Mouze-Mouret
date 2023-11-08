@@ -45,12 +45,12 @@ def to_csv(name_csv_file: str, fieldnames:list[str], rows:list[list[str]]) -> No
         for r in rows:
             csvwriter.writerow(r)
  
-def csv_to_Graphe(nom_fichier:str) -> Graphe:  
+def csv_to_Graphe(nom_fichier:str,k:int=0) -> Graphe:  
     """
     Creer et renvois le graphe associé à un fichier csv.
     Args:
         nom_fichier (str): nom fichier à convertir
-
+        k(int):nombre de suivi réalisé
     Returns:
         Graphe: Graphe issu du fichier.
     """
@@ -58,16 +58,28 @@ def csv_to_Graphe(nom_fichier:str) -> Graphe:
     with open(nom_fichier+'.csv','r',encoding='utf8') as file:
         noeud=set()
         arcs=[]
-        for ligne in file:
-            s=ligne.split(',')
-            noeud = noeud  | {s[0]}
-            Dict_poids[s[0]] = float(s[2])
-            if len(s)>3:
-                #cple=couple(s)
-                #arcs += cple[0]
-                #Dict_poids[cple[1]]=cple[2]
-                arcs += couple(s)
-        return Graphe(noeud,arcs,Dict_poids)
+     
+        if k==0:
+            for ligne in file:
+                s=ligne.split(',')
+                noeud = noeud  | {s[0]}
+                Dict_poids[s[0]] = float(s[2])
+                if len(s)>3 and not s[3]=='':
+                        arcs += couple(s)
+            return(Graphe(noeud,arcs,Dict_poids),csv_to_Graphe(nom_fichier,k+1),csv_to_Graphe(nom_fichier,k+2),csv_to_Graphe(nom_fichier,k+3))
+        else:
+            for ligne in file:
+                s=ligne.split(',')
+                if s[3+k]=='' or s[3+k]=='\n':
+                    return None
+                else:
+                    noeud = noeud  | {s[0]}
+                    Dict_poids[s[0]] = float(s[3+k])
+                    if len(s)>3 and not s[3]=='':
+                            arcs += couple(s)
+                    else:
+                        pass
+            return Graphe(noeud,arcs,Dict_poids)
 
 def couple(s:list)->tuple:
     """retourne tout les arcs possibles relatif à une certaine tâche sous la forme de tuple(precedents,arrivée,durée)
@@ -178,13 +190,7 @@ def main():
     #grCours = Graphe(set(range (10)),{(5,8),(8,2),(2,9),(4,8),(4,0),(0,7),(7,6),(2,4),(8,1),(1,3),(1,6)})
    
     grph = csv_to_Graphe("G_bas")
-    debut_tot,fin_tot= forward_pass(grph)
-    debut_tard,fin_tard = backward_pass(grph,debut_tot,fin_tot)
-    print(debut_tot)
-    print(fin_tot)
-    print(debut_tard)
-    print(fin_tard)
-    
+
     """print(grph.noeuds)
     print(grph.adj)
     print(grph.poids)"""
