@@ -15,7 +15,62 @@
  Votre projet ne contient pas de cycle, il est faisable.
 \section{Visualisation du projet par un graphe}
 
-\begin{dot2tex}[neato,options=-tmath,scale=0.5]digraph grours {rankdir=LR;
-F -> GE1;FE -> CM;T -> FE;T -> PE;MP -> DP;MP -> R;DP -> GE2;DP -> C;IW -> PP;IC -> PP;P -> CM;P -> S;S -> R1;S -> R;DRC -> MP;GE1 -> DRC;CM -> FC;CM -> S;FC -> IC;FC -> IW;FC -> IS;PC -> F;IS -> PP;PP -> PM;C1 -> CM;C -> PE;C -> C1;C -> P;C -> R1;GE2 -> T;GE2 -> IE;}
-\end{dot2tex}\medskip
+\begin{dot2tex}[options=-tmath,scale=0.2916666666666667]digraph grours {rankdir=LR;
+P [label = "P,7"]; R1 [label = "R1,2"]; S [label = "S,3"]; PE [label = "PE,3"]; IE [label = "IE,3"]; IS [label = "IS,7"]; FC [label = "FC,7"]; DRC [label = "DRC,7"]; GE2 [label = "GE2,3"]; CM [label = "CM,10"]; MP [label = "MP,14"]; IC [label = "IC,7"]; C [label = "C,7"]; T [label = "T,14"]; FE [label = "FE,7"]; IW [label = "IW,3"]; PC [label = "PC,60"]; PP [label = "PP,7"]; PM [label = "PM,7"]; R [label = "R,0"]; C1 [label = "C1,7"]; DP [label = "DP,7"]; GE1 [label = "GE1,3"]; F [label = "F,7"]; P -> CM[label = "7.0"];P -> S[label = "7.0"];S -> R1[label = "3.0"];S -> R[label = "3.0"];IS -> PP[label = "7.0",color = "red"];FC -> IC[label = "7.0",color = "red"];FC -> IW[label = "7.0"];FC -> IS[label = "7.0",color = "red"];DRC -> MP[label = "7.0",color = "red"];GE2 -> T[label = "3.0",color = "red"];GE2 -> IE[label = "3.0"];CM -> FC[label = "10.0",color = "red"];CM -> S[label = "10.0"];MP -> DP[label = "14.0",color = "red"];MP -> R[label = "14.0"];IC -> PP[label = "7.0",color = "red"];C -> PE[label = "7.0"];C -> C1[label = "7.0"];C -> P[label = "7.0"];C -> R1[label = "7.0"];T -> FE[label = "14.0",color = "red"];T -> PE[label = "14.0"];FE -> CM[label = "7.0",color = "red"];IW -> PP[label = "3.0"];PC -> F[label = "60.0",color = "red"];PP -> PM[label = "7.0",color = "red"];C1 -> CM[label = "7.0"];DP -> GE2[label = "7.0",color = "red"];DP -> C[label = "7.0"];GE1 -> DRC[label = "3.0",color = "red"];F -> GE1[label = "7.0",color = "red"];}
+\end{dot2tex}
+\begin{tabular}{|l|M|N|}
+\hline 
+Tâche & Date de début au plus tôt & Date de début au plus tard \tabularnewline
+\hline
+
+PC&0&60.0\tabularnewline
+\hline
+F&60.0&67.0\tabularnewline
+\hline
+GE1&67.0&70.0\tabularnewline
+\hline
+DRC&70.0&77.0\tabularnewline
+\hline
+MP&77.0&91.0\tabularnewline
+\hline
+DP&91.0&98.0\tabularnewline
+\hline
+GE2&98.0&101.0\tabularnewline
+\hline
+C&98.0&115.0\tabularnewline
+\hline
+IE&101.0&160.0\tabularnewline
+\hline
+T&101.0&115.0\tabularnewline
+\hline
+P&105.0&122.0\tabularnewline
+\hline
+C1&105.0&122.0\tabularnewline
+\hline
+PE&115.0&160.0\tabularnewline
+\hline
+FE&115.0&122.0\tabularnewline
+\hline
+CM&122.0&132.0\tabularnewline
+\hline
+S&132.0&158.0\tabularnewline
+\hline
+FC&132.0&139.0\tabularnewline
+\hline
+R1&135.0&160.0\tabularnewline
+\hline
+R&135.0&160.0\tabularnewline
+\hline
+IS&139.0&146.0\tabularnewline
+\hline
+IC&139.0&146.0\tabularnewline
+\hline
+IW&139.0&146.0\tabularnewline
+\hline
+PP&146.0&153.0\tabularnewline
+\hline
+PM&153.0&160.0\tabularnewline
+\hline
+
+\end{tabular}
 \end{document}

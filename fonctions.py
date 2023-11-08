@@ -15,59 +15,6 @@ class Graphe :
         self.adj = {n : [a[1] for a in arcs if a[0] == n] for n in noeuds}
         self.poids = poids
     
-    def __str__(self) -> str:
-        return self.adj
-    def parcoursLargeur(self, s : int) -> list:
-        """parcours d'un Graphe depuis un noeud s
-
-        Args:
-            s (int): noeud de départ
-        """
-        assert s in self.noeuds
-        file = [s]
-        parcours = [s]
-        while len(file)!=0:
-            n=file.pop(0)
-            for i in self.adj[n]:
-                if i not in parcours:
-                    parcours.append(i)
-                    file.append(i)
-        return parcours
-
-    def parcoursProfondeur( self, s : int) -> list:
-        """parcours d'un Graphe depuis un noeud s
-        Args:
-            s (int): noeud de départ
-        """
-        assert s in self.noeuds
-        pile = [s]
-        parcours = []
-        while len(pile)!=0:
-            n= pile.pop(-1)
-            parcours.append(n)
-            for i in self.adj[n]:
-                if i not in parcours:
-                    pile.append(i)
-            
-        return parcours
-    
-    def géné_lateX(self):
-        tex = "\n\\begin{dot2tex}[neato,options=-tmath,scale=0.5]digraph grours {rankdir=LR;\n"
-        for arc in self.adj:
-            for i in self.adj[arc]:
-                tex+=f"{arc} -> {i};"
-        tex += "}\n\\end{dot2tex}"
-        return tex
-    
-    def dessiner_graphe(self):
-        tex = "\documentclass{article}\n\\usepackage[utf8]{inputenc}\n\\usepackage[pdf]{graphviz}\n\\usepackage[autosize]{dot2texi}\n\\usepackage{tikz}\n\\usetikzlibrary{shapes,arrows}\n\\begin{document}"
-        #si on veut écrire le latex dans un fichier dédié
-        tex+= self.géné_lateX()
-        tex+="\n\end{document}"
-        file = open("Latex/latex.tex", "w")
-        file.write(tex)
-        file.close()
-        
     #Guille
     def contient_cycle(self):
         for noeud_depart in self.noeuds:
@@ -141,45 +88,7 @@ def couple(s:list)->tuple:
         #return [arcs,s[0],s[2]]
         return arcs
 
-def Dijkstra(g : Graphe, n_départ : str,  poids : dict[tuple[int,int],int], neg = False):
-    assert n_départ in g.noeuds
-    pred = {n : None for n in g.noeuds}#dictionnaire des prédécesseur du noeud dans le chemin le plus rapide jusqu'à l'origine
-    dict_dist_source = {n : 0 if n==n_départ else math.inf for n in g.noeuds}#dictionnaire des distance depuis la source
-    noeuds_restants = g.noeuds#noueds qui n'ont pas encore été parcourus
-    while noeuds_restants != set():#tant que tout les noeuds n'ont pas été parcourus
-        new_dict = {k : dict_dist_source[k] for k in noeuds_restants}#dictionnaire des distance ne contenant que les noeuds non parcourus
-        source_courante = min(new_dict, key=new_dict.get)#le prochain noeuds a être analysé est le plus proche des noeuds qui n'a pas été parcourus
-        noeuds_restants = noeuds_restants - {source_courante}#on l'enleve des noeuds restants
-        for n_dist in g.adj[source_courante]:#pour chaque arcs depuis la source courante
-            if dict_dist_source[n_dist]> dict_dist_source[source_courante] + ((-1)**neg )* poids[source_courante]:#si le chemin par la source courante est plus rapide, choisir celui ci
-                dict_dist_source[n_dist] = dict_dist_source[source_courante] + ((-1)**neg )* poids[source_courante]
-                pred[n_dist] = source_courante
-    return (pred,dict_dist_source)#on retourne la liste des prédécesseur et des durées minimales avant le commancement d'une tâche
-def Bellman_Ford(g : Graphe, n_départ : str,  poids : dict[tuple[int,int],int], neg = False):
-    dico_pred = {n : None for n in g.noeuds}#dictionnaire des prédécesseur du noeud dans le chemin le plus rapide jusqu'à l'origine
-    dico_dist_source = {n : 0 if n==n_départ else math.inf for n in g.noeuds}#dictionnaire des distance depuis la source
-    for _ in range(len(g.noeuds)-1):
-        for u in g.noeuds:
-            for v in g.adj[u]:
-                if dico_dist_source[u] - g.poids[u]< dico_dist_source[v]:
-                    dico_dist_source[v] = dico_dist_source[u]- g.poids[u]
-                    dico_pred[v] = u
-    
-    return dico_dist_source,dico_pred
-def chemins_critique(graphe):
-    dico_pred,dico_duree = Bellman_Ford(graphe,"PC",graphe.poids,neg = True)
-    for tache in dico_duree.keys():
-        dico_duree[tache] *= -1
-        
-        
-    noeuds_critiques = set()
-    noeuds_critiques.add(max(dico_duree,key = dico_duree.get))
-    for n_dep in graphe.adj.keys():
-        for n_arr in graphe.adj[n_dep]:
-            if dico_duree[n_arr]-dico_duree[n_dep] == graphe.poids[n_dep]:
-                noeuds_critiques.add(n_dep)
-    return noeuds_critiques
-
+#Bas
 def parents(graphe):
     """retrouve les noeuds parents de chaque noeud
     Returns:
@@ -191,14 +100,9 @@ def parents(graphe):
             dico_parents[n_f].add(n_d)
     return dico_parents
 
-
-
-
-
 def forward_pass(graphe) :
     
     #forward pass
-    
     debut_tot = {n : -1 for n in graphe.noeuds}#date de départ minimum
     fin_tot = {n : -1 for n in graphe.noeuds}#date de fin minimum
     par = parents(graphe)
@@ -250,6 +154,24 @@ def backward_pass(graphe,debut_tot,fin_tot):
                     debut_tard[n] = debut_tard[n_fils]-graphe.poids[n]
      
     return debut_tard,fin_tard
+
+
+def noeuds_critiques(graphe,debut_tot,fin_tard):
+    noeud_critiques = set()
+    for noeud in graphe.noeuds:
+        if debut_tot[noeud]+graphe.poids[noeud] == fin_tard[noeud]:
+            noeud_critiques.add(noeud)
+    return noeud_critiques
+    
+
+def analyse_PERT(graphe):
+    debut_tot,fin_tot= forward_pass(graphe)
+    debut_tard,fin_tard = backward_pass(graphe,debut_tot,fin_tot)
+    n_crit = noeuds_critiques(graphe,debut_tot,fin_tard)
+    n_triés = sorted(debut_tot, key = debut_tot.get)
+    return(n_triés,n_crit,debut_tot,fin_tard)
+
+
 
 
 def main():
