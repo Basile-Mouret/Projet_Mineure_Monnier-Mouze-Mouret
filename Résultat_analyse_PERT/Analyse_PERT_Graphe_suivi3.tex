@@ -1,0 +1,128 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[pdf]{graphviz}
+\usepackage[autosize]{dot2texi}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
+
+
+\title{Analyse de votre projet}
+\begin{document}
+\maketitle
+
+
+\section{Faisabilite du projet}
+ Votre projet ne contient pas de cycle, il est faisable.
+Nous pouvons donc l'analyser et vous aider à organiser votre travail.
+
+\section{Visualisation du projet par un graphe}
+\subsection{Graphe image}
+Les chemins critiques sont marques en rouge dans le graphe.
+\begin{dot2tex}[options=-tmath,scale=1.0]digraph grours {rankdir=LR;
+A [label = "A,7"]; D [label = "D,8"]; E [label = "E,9"]; F [label = "F,6"]; G [label = "G,5"]; B [label = "B,9"]; C [label = "C,12"]; A -> C[label = "7.0"];A -> D[label = "7.0"];D -> E[label = "8.0",color = "red"];E -> F[label = "9.0",color = "red"];E -> G[label = "9.0"];B -> D[label = "9.0",color = "red"];C -> F[label = "12.0"];}
+\end{dot2tex}
+\subsection{Description des taches}A : a\newline{}B : b\newline{}C : c\newline{}D : d\newline{}E : e\newline{}F : f\newline{}G : g\newline{}
+\subsection{Tableau des dates}
+
+Ce tableau montre les dates auxquelles vous pourrez commencer chaque tâche au plus tôt et les dates pour lesquelles elles devront êtres finies pour ne pas retarder l'ensemble du projet
+Si la tache est de couleur rouge, elle est désignée comme critique,elle n'a pas de mou, c'est a dire qu'un retard sur cette tache implique un retard sur l'ensemble du Projet.\\
+
+\begin{tabular}{|l|l|l|l|l|}
+\hline 
+Tache & Duree & Date de debut au plus tot & Date de fin au plus tard & Mou\tabularnewline
+\hline
+
+A&7.0&0&9.0&2.0\tabularnewline
+\hline
+B&9.0&0&9.0&\textcolor{red}{critique}\tabularnewline
+\hline
+C&12.0&7.0&26.0&7.0\tabularnewline
+\hline
+D&8.0&9.0&17.0&\textcolor{red}{critique}\tabularnewline
+\hline
+E&9.0&17.0&26.0&\textcolor{red}{critique}\tabularnewline
+\hline
+F&6.0&26.0&32.0&\textcolor{red}{critique}\tabularnewline
+\hline
+G&5.0&26.0&32.0&1.0\tabularnewline
+\hline
+
+\end{tabular}
+La duree totale de votre projet est de 32.0.
+
+\subsection{Suivi 1}
+Ici vous pouvez voir les dates de depart au plus tot et de fin au plus tard du suivi n°1.\\
+\begin{tabular}{|l|l|l|l|l|}
+\hline 
+Tache & Duree & Date de debut au plus tot & Date de fin au plus tard & Mou\tabularnewline
+\hline
+
+A&1.0&0&1.0&\textcolor{red}{critique}\tabularnewline
+\hline
+B&1.0&0&1.0&\textcolor{red}{critique}\tabularnewline
+\hline
+D&4.0&1.0&5.0&\textcolor{red}{critique}\tabularnewline
+\hline
+C&12.0&1.0&15.0&2.0\tabularnewline
+\hline
+E&10.0&5.0&15.0&\textcolor{red}{critique}\tabularnewline
+\hline
+F&6.0&15.0&21.0&\textcolor{red}{critique}\tabularnewline
+\hline
+G&5.0&15.0&21.0&1.0\tabularnewline
+\hline
+
+\end{tabular}
+La duree totale de votre projet est de 21.0.
+
+\subsection{Suivi 2}
+Ici vous pouvez voir les dates de départ au plus tot et de fin au plus tard du suivi n°2. \\
+\begin{tabular}{|l|l|l|l|l|}
+\hline 
+Tache & Duree & Date de debut au plus tot & Date de fin au plus tard & Mou\tabularnewline
+\hline
+
+A&0 &0&0.0&finie\tabularnewline
+\hline
+\textcolor{red}{D}&3.0&0.0&3.0&\textcolor{red}{critique}\tabularnewline
+\hline
+B&0 &0&0.0&finie\tabularnewline
+\hline
+C&5.0&0.0&12.0&7.0\tabularnewline
+\hline
+\textcolor{red}{E}&9.0&3.0&12.0&\textcolor{red}{critique}\tabularnewline
+\hline
+\textcolor{red}{F}&6.0&12.0&18.0&\textcolor{red}{critique}\tabularnewline
+\hline
+G&5.0&12.0&18.0&1.0\tabularnewline
+\hline
+
+\end{tabular}
+La duree totale de votre projet est de 18.0.
+
+\subsection{Suivi 3}
+Ici vous pouvez voir les dates de départ au plus tot et de fin au plus tard du suivi n°3. \\
+\begin{tabular}{|l|l|l|l|l|}
+\hline 
+Tache & Duree & Date de debut au plus tot & Date de fin au plus tard & Mou\tabularnewline
+\hline
+
+A&0 &0&0.0&finie\tabularnewline
+\hline
+D&0 &0.0&0.0&finie\tabularnewline
+\hline
+E&0 &0.0&0.0&finie\tabularnewline
+\hline
+F&0 &0.0&0.0&finie\tabularnewline
+\hline
+G&0 &0.0&0.0&finie\tabularnewline
+\hline
+B&0 &0&0.0&finie\tabularnewline
+\hline
+C&0 &0.0&0.0&finie\tabularnewline
+\hline
+
+\end{tabular}
+La duree totale de votre projet est de 0.0.
+
+\end{document}

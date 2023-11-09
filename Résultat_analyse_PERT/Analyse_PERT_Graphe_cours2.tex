@@ -1,0 +1,87 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[pdf]{graphviz}
+\usepackage[autosize]{dot2texi}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
+
+
+\title{Analyse de votre projet}
+\begin{document}
+\maketitle
+
+
+\section{Faisabilite du projet}
+ Votre projet ne contient pas de cycle, il est faisable.
+Nous pouvons donc l'analyser et vous aider à organiser votre travail.
+
+\section{Visualisation du projet par un graphe}
+\subsection{Graphe image}
+Les chemins critiques sont marques en rouge dans le graphe.
+\begin{dot2tex}[options=-tmath,scale=0.2916666666666667]digraph grours {rankdir=LR;
+DP [label = "DP,7"]; PE [label = "PE,3"]; R1 [label = "R1,2"]; CM [label = "CM,10"]; R [label = "R,0"]; C [label = "C,7"]; DRC [label = "DRC,7"]; MP [label = "MP,14"]; GE1 [label = "GE1,3"]; T [label = "T,14"]; F [label = "F,7"]; IE [label = "IE,3"]; C1 [label = "C1,7"]; S [label = "S,3"]; PP [label = "PP,7"]; GE2 [label = "GE2,3"]; IS [label = "IS,7"]; PC [label = "PC,60"]; P [label = "P,7"]; FC [label = "FC,7"]; IW [label = "IW,3"]; PM [label = "PM,7"]; FE [label = "FE,7"]; IC [label = "IC,7"]; DP -> GE2[label = "7.0",color = "red"];DP -> C[label = "7.0"];CM -> FC[label = "10.0",color = "red"];CM -> S[label = "10.0"];C -> PE[label = "7.0"];C -> C1[label = "7.0"];C -> P[label = "7.0"];C -> R1[label = "7.0"];DRC -> MP[label = "7.0",color = "red"];MP -> DP[label = "14.0",color = "red"];MP -> R[label = "14.0"];GE1 -> DRC[label = "3.0",color = "red"];T -> FE[label = "14.0",color = "red"];T -> PE[label = "14.0"];F -> GE1[label = "7.0",color = "red"];C1 -> CM[label = "7.0"];S -> R1[label = "3.0"];S -> R[label = "3.0"];PP -> PM[label = "7.0",color = "red"];GE2 -> T[label = "3.0",color = "red"];GE2 -> IE[label = "3.0"];IS -> PP[label = "7.0",color = "red"];PC -> F[label = "60.0",color = "red"];P -> CM[label = "7.0"];P -> S[label = "7.0"];FC -> IC[label = "7.0",color = "red"];FC -> IW[label = "7.0"];FC -> IS[label = "7.0",color = "red"];IW -> PP[label = "3.0"];FE -> CM[label = "7.0",color = "red"];IC -> PP[label = "7.0",color = "red"];}
+\end{dot2tex}
+\subsection{Description des taches}PC : Permis de construire \newline{}F : Fondations\newline{}GE1 : Passage des gaines et évacuations \newline{}DRC : Dalle rez de chaussée\newline{}MP : Murs porteurs \newline{}DP : Dalles plafond \newline{}C : Chape\newline{}GE2 : Passage gaines et évacuation\newline{}T : Toiture\newline{}IE : Installation électrique et évacuation\newline{}C1 : Carrelage du sol\newline{}P : Parquets\newline{}PE : Portes extèrieures\newline{}FE : Fenêtres\newline{}CM : Cloisons et menuiserie intérieure\newline{}S : Serrurerie\newline{}FC : Finition des cloisons\newline{}R1 : Revêtement des sols (moquettes) \newline{}R : Réception de la maison \newline{}IS : Implantation des salles de bain\newline{}IW : Implantation des wc\newline{}IC : Implantation de la cuisine \newline{}PP : Peinture des plafonds \newline{}PM : Peinture des murs\newline{}
+\subsection{Tableau des dates}
+
+Ce tableau montre les dates auxquelles vous pourrez commencer chaque tâche au plus tôt et les dates pour lesquelles elles devront êtres finies pour ne pas retarder l'ensemble du projet
+Si la tache est de couleur rouge, elle est désignée comme critique,elle n'a pas de mou, c'est a dire qu'un retard sur cette tache implique un retard sur l'ensemble du Projet.\\
+
+\begin{tabular}{|l|l|l|l|l|}
+\hline 
+Tache & Duree & Date de debut au plus tot & Date de fin au plus tard & Mou\tabularnewline
+\hline
+
+PC&60.0&0&60.0&\textcolor{red}{critique}\tabularnewline
+\hline
+F&7.0&60.0&67.0&\textcolor{red}{critique}\tabularnewline
+\hline
+GE1&3.0&67.0&70.0&\textcolor{red}{critique}\tabularnewline
+\hline
+DRC&7.0&70.0&77.0&\textcolor{red}{critique}\tabularnewline
+\hline
+MP&14.0&77.0&91.0&\textcolor{red}{critique}\tabularnewline
+\hline
+DP&7.0&91.0&98.0&\textcolor{red}{critique}\tabularnewline
+\hline
+C&7.0&98.0&115.0&10.0\tabularnewline
+\hline
+GE2&3.0&98.0&101.0&\textcolor{red}{critique}\tabularnewline
+\hline
+T&14.0&101.0&115.0&\textcolor{red}{critique}\tabularnewline
+\hline
+IE&3.0&101.0&160.0&56.0\tabularnewline
+\hline
+C1&7.0&105.0&122.0&10.0\tabularnewline
+\hline
+P&7.0&105.0&122.0&10.0\tabularnewline
+\hline
+PE&3.0&115.0&160.0&42.0\tabularnewline
+\hline
+FE&7.0&115.0&122.0&\textcolor{red}{critique}\tabularnewline
+\hline
+CM&10.0&122.0&132.0&\textcolor{red}{critique}\tabularnewline
+\hline
+S&3.0&132.0&158.0&23.0\tabularnewline
+\hline
+FC&7.0&132.0&139.0&\textcolor{red}{critique}\tabularnewline
+\hline
+R1&2.0&135.0&160.0&23.0\tabularnewline
+\hline
+R&0.5&135.0&160.0&24.5\tabularnewline
+\hline
+IS&7.0&139.0&146.0&\textcolor{red}{critique}\tabularnewline
+\hline
+IW&3.0&139.0&146.0&4.0\tabularnewline
+\hline
+IC&7.0&139.0&146.0&\textcolor{red}{critique}\tabularnewline
+\hline
+PP&7.0&146.0&153.0&\textcolor{red}{critique}\tabularnewline
+\hline
+PM&7.0&153.0&160.0&\textcolor{red}{critique}\tabularnewline
+\hline
+
+\end{tabular}
+La duree totale de votre projet est de 160.0.
+
+\end{document}

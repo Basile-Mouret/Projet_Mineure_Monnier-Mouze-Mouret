@@ -1,0 +1,53 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[pdf]{graphviz}
+\usepackage[autosize]{dot2texi}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows}
+
+
+\title{Analyse de votre projet}
+\begin{document}
+\maketitle
+
+
+\section{Faisabilite du projet}
+ Votre projet ne contient pas de cycle, il est faisable.
+Nous pouvons donc l'analyser et vous aider à organiser votre travail.
+
+\section{Visualisation du projet par un graphe}
+\subsection{Graphe image}
+Les chemins critiques sont marques en rouge dans le graphe.
+\begin{dot2tex}[options=-tmath,scale=1.0]digraph grours {rankdir=LR;
+C [label = "C,3"]; B [label = "B,3"]; A [label = "A,3"]; D [label = "D,4"]; F [label = "F,7"]; G [label = "G,9"]; E [label = "E,1"]; C -> F[label = "3.0"];B -> D[label = "3.0",color = "red"];A -> C[label = "3.0"];A -> D[label = "3.0",color = "red"];D -> E[label = "4.0",color = "red"];E -> F[label = "1.0"];E -> G[label = "1.0",color = "red"];}
+\end{dot2tex}
+\subsection{Description des taches}B : b\newline{}A : a\newline{}C : c\newline{}D : d\newline{}E : e\newline{}F : f\newline{}G : g\newline{}
+\subsection{Tableau des dates}
+
+Ce tableau montre les dates auxquelles vous pourrez commencer chaque tâche au plus tôt et les dates pour lesquelles elles devront êtres finies pour ne pas retarder l'ensemble du projet
+Si la tache est de couleur rouge, elle est désignée comme critique,elle n'a pas de mou, c'est a dire qu'un retard sur cette tache implique un retard sur l'ensemble du Projet.\\
+
+\begin{tabular}{|l|l|l|l|l|}
+\hline 
+Tache & Duree & Date de debut au plus tot & Date de fin au plus tard & Mou\tabularnewline
+\hline
+
+B&3.0&0&3.0&\textcolor{red}{critique}\tabularnewline
+\hline
+A&3.0&0&3.0&\textcolor{red}{critique}\tabularnewline
+\hline
+C&3.0&3.0&10.0&4.0\tabularnewline
+\hline
+D&4.0&3.0&7.0&\textcolor{red}{critique}\tabularnewline
+\hline
+E&1.0&7.0&8.0&\textcolor{red}{critique}\tabularnewline
+\hline
+F&7.0&8.0&17.0&2.0\tabularnewline
+\hline
+G&9.0&8.0&17.0&\textcolor{red}{critique}\tabularnewline
+\hline
+
+\end{tabular}
+La duree totale de votre projet est de 17.0.
+
+\end{document}

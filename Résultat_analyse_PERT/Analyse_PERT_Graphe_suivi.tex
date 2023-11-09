@@ -19,7 +19,7 @@ Nous pouvons donc l'analyser et vous aider à organiser votre travail.
 \subsection{Graphe image}
 Les chemins critiques sont marques en rouge dans le graphe.
 \begin{dot2tex}[options=-tmath,scale=1.0]digraph grours {rankdir=LR;
-E [label = "E,9"]; F [label = "F,6"]; B [label = "B,9"]; D [label = "D,8"]; G [label = "G,5"]; C [label = "C,12"]; A [label = "A,7"]; E -> F[label = "9.0",color = "red"];E -> G[label = "9.0"];B -> D[label = "9.0",color = "red"];D -> E[label = "8.0",color = "red"];C -> F[label = "12.0"];A -> C[label = "7.0"];A -> D[label = "7.0"];}
+E [label = "E,9"]; D [label = "D,8"]; F [label = "F,6"]; G [label = "G,5"]; C [label = "C,12"]; B [label = "B,9"]; A [label = "A,7"]; E -> F[label = "9.0",color = "red"];E -> G[label = "9.0"];D -> E[label = "8.0",color = "red"];C -> F[label = "12.0"];B -> D[label = "9.0",color = "red"];A -> C[label = "7.0"];A -> D[label = "7.0"];}
 \end{dot2tex}
 \subsection{Description des taches}B : b\newline{}A : a\newline{}C : c\newline{}D : d\newline{}E : e\newline{}F : f\newline{}G : g\newline{}
 \subsection{Tableau des dates}
@@ -49,5 +49,30 @@ G&5.0&26.0&32.0&1.0\tabularnewline
 
 \end{tabular}
 La duree totale de votre projet est de 32.0.
+
+\subsection{Suivi 1}
+Ici vous pouvez voir les dates de depart au plus tot et de fin au plus tard du suivi n°1.\\
+\begin{tabular}{|l|l|l|l|l|}
+\hline 
+Tache & Duree & Date de debut au plus tot & Date de fin au plus tard & Mou\tabularnewline
+\hline
+
+B&1.0&0&3.0&2.0\tabularnewline
+\hline
+A&1.0&0&1.0&\textcolor{red}{critique}\tabularnewline
+\hline
+D&4.0&1.0&7.0&2.0\tabularnewline
+\hline
+C&12.0&1.0&13.0&\textcolor{red}{critique}\tabularnewline
+\hline
+E&6.0&5.0&13.0&2.0\tabularnewline
+\hline
+G&5.0&11.0&19.0&3.0\tabularnewline
+\hline
+F&6.0&13.0&19.0&\textcolor{red}{critique}\tabularnewline
+\hline
+
+\end{tabular}
+La duree totale de votre projet est de 19.0.
 
 \end{document}
