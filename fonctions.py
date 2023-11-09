@@ -3,7 +3,7 @@ import csv
 
 
 class Graphe :
-    def __init__(self, noeuds : set, arcs : list[tuple[int,int]],poids :dict[str : int]) -> None:
+    def __init__(self, noeuds : set, arcs : list[tuple[int,int]],poids :dict[str : int],descriptions : dict[str,str] = dict()) -> None:
         """rajouter les descriptions
 
         Args:
@@ -14,6 +14,7 @@ class Graphe :
         self.noeuds = noeuds
         self.adj = {n : [a[1] for a in arcs if a[0] == n] for n in noeuds}
         self.poids = poids
+        self.descriptions = descriptions
     
     #Guille
     def contient_cycle(self):
@@ -45,29 +46,44 @@ def to_csv(name_csv_file: str, fieldnames:list[str], rows:list[list[str]]) -> No
         for r in rows:
             csvwriter.writerow(r)
  
-def csv_to_Graphe(nom_fichier:str) -> Graphe:  
+def csv_to_Graphe(nom_fichier:str,k:int=0) -> Graphe:  
     """
     Creer et renvois le graphe associé à un fichier csv.
     Args:
         nom_fichier (str): nom fichier à convertir
-
+        k(int):nombre de suivi réalisé
     Returns:
         Graphe: Graphe issu du fichier.
     """
     Dict_poids={}
-    with open(nom_fichier+'.csv','r',encoding='utf8') as file:
+    Dict_description={}
+    with open('Dépot_de_projet/' + nom_fichier+'.csv','r',encoding='utf8') as file:
         noeud=set()
         arcs=[]
-        for ligne in file:
-            s=ligne.split(',')
-            noeud = noeud  | {s[0]}
-            Dict_poids[s[0]] = float(s[2])
-            if not s[3] == "":
-                #cple=couple(s)
-                #arcs += cple[0]
-                #Dict_poids[cple[1]]=cple[2]
-                arcs += couple(s)
-        return Graphe(noeud,arcs,Dict_poids)
+     
+        if k==0:
+            for ligne in file:
+                s=ligne.split(',')
+                noeud = noeud  | {s[0]}
+                Dict_poids[s[0]] = float(s[2])
+                Dict_description[s[0]]=s[1]
+                if len(s)>3 and not s[3]=='':
+                        arcs += couple(s)
+            return(Graphe(noeud,arcs,Dict_poids,Dict_description),csv_to_Graphe(nom_fichier,k+1),csv_to_Graphe(nom_fichier,k+2),csv_to_Graphe(nom_fichier,k+3))
+        else:
+            for ligne in file:
+                s=ligne.split(',')
+                if s[3+k]=='' or s[3+k]=='\n':
+                    return None
+                else:
+                    noeud = noeud  | {s[0]}
+                    Dict_poids[s[0]] = float(s[3+k])
+                    Dict_description[s[0]]=s[1]
+                    if len(s)>3 and not s[3]=='':
+                            arcs += couple(s)
+                    else:
+                        pass
+            return Graphe(noeud,arcs,Dict_poids,Dict_description)
 
 def couple(s:list)->tuple:
     """retourne tout les arcs possibles relatif à une certaine tâche sous la forme de tuple(precedents,arrivée,durée)

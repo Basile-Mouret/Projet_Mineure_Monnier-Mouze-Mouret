@@ -1,16 +1,16 @@
-PC,Permis de construire ,60
-F,Fondations,7,PC
-GE1,Passage des gaines et évacuations ,3,F
-DRC,Dalle rez de chaussée,7,GE1
-MP,Murs porteurs ,14,DRC
+PC,Permis de construire ,60,,0,,
+F,Fondations,7,PC,1,,
+GE1,Passage des gaines et évacuations ,3,F,2
+DRC,Dalle rez de chaussée,7,GE1,1
+MP,Murs porteurs ,14,DRC,2
 DP,Dalles plafond ,7,MP
-GE2,Passage gaines et évacuation,3,DP
+GE2,Passage gaines et évacuation,3,DP,,,
 T,Toiture,14,GE2
 FE,Fenêtres,7,T
 PE,Portes extèrieures,3,T C
 IE,Installation électrique et évacuation,3,GE2
 C,Chape,7,DP
-C1,Carrelage du sol,7,C
+C1,Carrelage du sol,7,C0
 P,Parquets,7,C
 CM,Cloisons et menuiserie intérieure,10,FE C1 P FC
 FC,Finition des cloisons,7,CM

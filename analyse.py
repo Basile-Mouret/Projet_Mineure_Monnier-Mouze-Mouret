@@ -2,7 +2,7 @@ from fonctions import *
 
 def rediger_lateX(fichier_csv):
     
-    grph = csv_to_Graphe(fichier_csv)
+    grph,suivi1,suivi2,suivi3 = csv_to_Graphe(fichier_csv)
     string = '''\\documentclass{article}
 \\usepackage[utf8]{inputenc}
 \\usepackage[pdf]{graphviz}
@@ -21,7 +21,9 @@ def rediger_lateX(fichier_csv):
     if grph.contient_cycle():
         return string +"Votre projet n'est pas faisable car il contient un cycle"+"""
 \\end{document}"""
-    string += 'Votre projet ne contient pas de cycle, il est faisable.'
+    string += '''Votre projet ne contient pas de cycle, il est faisable.
+Nous pouvons donc l'analyser et vous aider à organiser votre travail.
+'''
     #Analyse du graphe
     n_triés,n_crit,dicotot,dicotard = analyse_PERT(grph)
     
@@ -44,34 +46,26 @@ Les chemins critiques sont marques en rouge dans le graphe.'''
     string += "}\n\\end{dot2tex}"
   
                         #Tableaux tâches-descriptions et tâche-durée
-    """
-    dicodescriptions = description_taches(fichier_taches)
-    string += '''
-\\begin{tabular}{|l|M|}
-\hline 
-Identifiant & Description \\tabularnewline
-\\hline
-'''
-  
-    for i in dicodescriptions.keys():
-        string += str(i) + '&' + str(dicodescriptions[i]) + '''\\tabularnewline
-\\hline
-'''
-    string += '''
-\\end{tabular}
-'''
-"""
+    string+="\n\\subsection{Description des taches}"
+    dicodescriptions = grph.descriptions
+    
+    for tache in n_triés:
+        string += tache + " : "+ dicodescriptions[tache] +"\\newline{}"
+
     string += '''
 \\subsection{Tableau des dates}
-\\newline{}
-\\begin{tabular}{|l|M|N|C|}
+
+Ce tableau montre les dates auxquelles vous pourrez commencer chaque tâche au plus tôt et les dates pour lesquelles elles devront êtres finies pour ne pas retarder l'ensemble du projet
+Si la tache est de couleur rouge, elle est désignée comme critique,elle n'a pas de mou, c'est a dire qu'un retard sur cette tache implique un retard sur l'ensemble du Projet.\\\\
+
+\\begin{tabular}{|l|l|l|l|l|}
 \hline 
-Tache & Date de debut au plus tot & Date de fin au plus tard & Criticalite\\tabularnewline
+Tache & Duree & Date de debut au plus tot & Date de fin au plus tard & Mou\\tabularnewline
 \\hline
 
 '''
     for noeud in n_triés:
-      string += str(noeud) + '&' + str(dicotot[noeud]) + '&' + str(dicotard[noeud]) + '&' + ('critique'if noeud in n_crit else 'non critique') + '''\\tabularnewline
+      string += str(noeud) + '&' +str(grph.poids[noeud]) + '&' + str(dicotot[noeud]) + '&' + str(dicotard[noeud]) + '&' + ('\\textcolor{red}{critique}'if noeud in n_crit else str(dicotard[noeud]-dicotot[noeud]-grph.poids[noeud])) + '''\\tabularnewline
 \\hline
 '''
     string += '''
@@ -90,15 +84,99 @@ Tache & Date de debut au plus tot & Date de fin au plus tard & Criticalite\\tabu
 '''
     string += "Leur duree est de : " + str(critique[1]) + " jours"
     """
-    
-    
+    if suivi1 is not None:
+        n_triés,n_crit,dicotot,dicotard = analyse_PERT(suivi1)
+        string += '''
+\\subsection{Suivi 1}
+Ici vous pouvez voir les dates de depart au plus tot et de fin au plus tard du suivi n°1.\\\\
+\\begin{tabular}{|l|l|l|l|l|}
+\hline 
+Tache & Duree & Date de debut au plus tot & Date de fin au plus tard & Mou\\tabularnewline
+\\hline
+
+'''
+        for noeud in n_triés:
+            if suivi1.poids[noeud]==0:
+                string += str(noeud) + '&'+ '0 &' + str(dicotot[noeud]) + '&' + str(dicotard[noeud]) + '&' + 'finie' + '''\\tabularnewline
+\\hline
+'''  
+            elif noeud in n_crit:
+                string +=str(noeud)+'&' + str(suivi1.poids[noeud]) + '&' + str(dicotot[noeud]) + '&' + str(dicotard[noeud]) + '&' + '\\textcolor{red}{critique}' + '''\\tabularnewline
+\\hline
+'''         
+            else : 
+                string += str(noeud) + '&' + str(suivi1.poids[noeud]) + '&' + str(dicotot[noeud]) + '&' + str(dicotard[noeud]) + '&' + str(dicotard[noeud]-dicotot[noeud]-suivi1.poids[noeud]) + '''\\tabularnewline
+\\hline
+'''
+
+        string += '''
+\\end{tabular}'''
+
+    if suivi2 is not None:
+        n_triés,n_crit,dicotot,dicotard = analyse_PERT(suivi1)
+        string += '''
+\\subsection{Suivi 2}
+Ici vous pouvez voir les dates de départ au plus tot et de fin au plus tard du suivi n°2. \\\\
+\\begin{tabular}{|l|l|l|l|l|}
+\hline 
+Tache & Duree & Date de debut au plus tot & Date de fin au plus tard & Mou\\tabularnewline
+\\hline
+
+'''
+        for noeud in n_triés:
+            if suivi2.poids[noeud]==0:
+                string += str(noeud) + '&'+ '0 &' + str(dicotot[noeud]) + '&' + str(dicotard[noeud]) + '&' + 'finie' + '''\\tabularnewline
+\\hline
+'''  
+            elif noeud in n_crit:
+                string += '\\textcolor{red}{'+str(noeud)+'}' +'&' + str(suivi2.poids[noeud]) + '&' + str(dicotot[noeud]) + '&' + str(dicotard[noeud]) + '&' + '\\textcolor{red}{critique}' + '''\\tabularnewline
+\\hline
+'''         
+            else : 
+                string += str(noeud) + '&' + str(suivi2.poids[noeud]) + '&' + str(dicotot[noeud]) + '&' + str(dicotard[noeud]) + '&' + str(dicotard[noeud]-dicotot[noeud]-suivi2.poids[noeud]) + '''\\tabularnewline
+\\hline
+'''
+
+        string += '''
+\\end{tabular}'''
+
+    if suivi3 is not None:
+        n_triés,n_crit,dicotot,dicotard = analyse_PERT(suivi1)
+        string += '''
+\\subsection{Suivi 3}
+Ici vous pouvez voir les dates de départ au plus tot et de fin au plus tard du suivi n°3. \\\\
+\\begin{tabular}{|l|l|l|l|l|}
+\hline 
+Tache & Duree & Date de debut au plus tot & Date de fin au plus tard & Mou\\tabularnewline
+\\hline
+
+'''
+        for noeud in n_triés:
+            if suivi3.poids[noeud]==0:
+                string += str(noeud) + '&'+ '0 &' + str(dicotot[noeud]) + '&' + str(dicotard[noeud]) + '&' + 'finie' + '''\\tabularnewline
+\\hline
+'''  
+            elif noeud in n_crit:
+                string += '\\textcolor{red}{'+str(noeud)+'}' +'&' + str(suivi3.poids[noeud]) + '&' + str(dicotot[noeud]) + '&' + str(dicotard[noeud]) + '&' + '\\textcolor{red}{critique}' + '''\\tabularnewline
+\\hline
+'''         
+            else : 
+                string += str(noeud) + '&' + str(suivi3.poids[noeud]) + '&' + str(dicotot[noeud]) + '&' + str(dicotard[noeud]) + '&' + str(dicotard[noeud]-dicotot[noeud]-suivi3.poids[noeud]) + '''\\tabularnewline
+\\hline
+'''
+
+        string += '''
+\\end{tabular}'''
+
+
+
     string += ('''
 \\end{document}''')
     return string
 
 def rediger_rapport(fichier_csv):
     string = rediger_lateX(fichier_csv)
-    with  open("Analyse.tex","w") as file:
+    with  open("Résultat_analyse_PERT/Analyse_PERT_"+fichier_csv+".tex","w",encoding='utf8') as file:
         file.write(string)
     
 
