@@ -117,12 +117,20 @@ def parents(graphe):
     return dico_parents
 
 def forward_pass(graphe) :
+    """Détermine les dates de départ au plus tot et de fin au plus tot (départ au plus tot + )
+
+    Args:
+        graphe (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     
     #forward pass
     debut_tot = {n : -1 for n in graphe.noeuds}#date de départ minimum
     fin_tot = {n : -1 for n in graphe.noeuds}#date de fin minimum
     par = parents(graphe)
-    noeuds_départ  = {n for n in graphe.noeuds if par[n] == set()}
+    noeuds_départ  = {n for n in graphe.noeuds if par[n] == set()}# donne les noeuds de départ du graphe (qui n'ont pas de parents)
     file = []
     for n in noeuds_départ:
         debut_tot[n] = 0
@@ -131,10 +139,12 @@ def forward_pass(graphe) :
     
     while len(file)>0:
         n = file.pop(0)
+        #on vérifie que tout les parents du noeuds ont déjà étés parcourus
         parents_parcourus = True
         for n_parent in par[n]:
             if fin_tot[n_parent]<0: parents_parcourus = False
-        
+            
+        #si tout les parents sont parcourus, on détermine le début au plus tot
         if parents_parcourus:
             file += graphe.adj[n]
             for n_parent in par[n]:
@@ -145,23 +155,28 @@ def forward_pass(graphe) :
     
 def backward_pass(graphe,debut_tot,fin_tot):
     #backward pass
-
+    #même principe que à l'aller mais on parcours le graphe dans le sens inverse
     debut_tard = {n : math.inf for n in graphe.noeuds}#date de départ maximum
     fin_tard = {n : math.inf for n in graphe.noeuds}#date de fin minimum
     par = parents(graphe)
     noeuds_fin = {n for n in graphe.noeuds if len(graphe.adj[n])==0}#noeud de fin
     file = []
     duree_chemin_critique = max(fin_tot.values())
+    
     for n in noeuds_fin:
         fin_tard[n] = duree_chemin_critique
         debut_tard[n] = duree_chemin_critique - graphe.poids[n]#date de départ minimale
         file += par[n]
+        
+        
+        
     while len(file)>0:
         n = file.pop(0)
+        #on détermine si tout les fils ont étés parcourus
         fils_parcourus = True
         for n_fils in graphe.adj[n]:
             if fin_tard[n_fils] is None: fils_parcourus = False
-        
+        #si tous les fils sont parcourus, on détermine la date de fin au plus tard (cad la plus petite des dates de début au plus tot de ses fils)
         if fils_parcourus:
             file += par[n]
             for n_fils in graphe.adj[n]:
@@ -173,17 +188,35 @@ def backward_pass(graphe,debut_tot,fin_tot):
 
 
 def noeuds_critiques(graphe,debut_tot,fin_tard):
+    """Détermine les noeuds qui ne peuvent pas avoir de retard
+
+    Args:
+        graphe (Graphe): graphe a analyser
+        debut_tot (dict): dates de début au plus tot de chaque tache
+        fin_tard (dict): dates de fin au plus tard de chaque tache
+
+    Returns:
+        set: noeuds dis critique
+    """
     noeud_critiques = set()
     for noeud in graphe.noeuds:
         if debut_tot[noeud]+graphe.poids[noeud] == fin_tard[noeud]:
             noeud_critiques.add(noeud)
     return noeud_critiques
-    
+
 
 def analyse_PERT(graphe):
+    """fonction principale d'analyse PERT
+
+    Args:
+        graphe (Graphe): graphe à analyser
+    """ 
+    #déterminer les dates importantes pour l'analyser
     debut_tot,fin_tot= forward_pass(graphe)
     debut_tard,fin_tard = backward_pass(graphe,debut_tot,fin_tot)
+    #déterminer les noeuds qui sont critiques
     n_crit = noeuds_critiques(graphe,debut_tot,fin_tard)
+    #on trie les noeuds dans l'ordre topologique (chaque noeuds peut etre réalisé si tout les noueds qui le précèdent sont réalisés)
     n_triés = sorted(debut_tot, key = debut_tot.get)
     return(n_triés,n_crit,debut_tot,fin_tard)
 
@@ -192,7 +225,9 @@ def analyse_PERT(graphe):
 
 def main():
     #grCours = Graphe(set(range (10)),{(5,8),(8,2),(2,9),(4,8),(4,0),(0,7),(7,6),(2,4),(8,1),(1,3),(1,6)})
-   
+    """print(grph.noeuds)
+    print(grph.adj)
+    print(grph.poids)
     grph = csv_to_Graphe("G_bas")
     debut_tot,fin_tot= forward_pass(grph)
     debut_tard,fin_tard = backward_pass(grph,debut_tot,fin_tot)
@@ -200,20 +235,12 @@ def main():
     print(fin_tot)
     print(debut_tard)
     print(fin_tard)
-    
-    """print(grph.noeuds)
-    print(grph.adj)
-    print(grph.poids)"""
+    """
     
     
     
-    """print(Dijkstra(grph,"PC",grph.poids))
-    print(Dijkstra(grph,"PC",grph.poids,neg = True))
     
-    print()
-    print(Bellman_Ford(grph,"PC",grph.poids))
-    print("le graphe contient un cycle ?" ,grph.contient_cycle())
-    print(chemins_critique(grph))
+    """
     to_csv("G",["Identificateur","Description","Durée","Précédente(s)","S0","S1","S2"],
         [["PM","Permis de construire ",'60'],
          ["F","Fondations",'7',"PC"],

@@ -69,21 +69,13 @@ Tache & Duree & Date de debut au plus tot & Date de fin au plus tard & Mou\\tabu
 \\hline
 '''
     string += '''
-\\end{tabular}'''
-                               #Chemins critiques
-    """                           
-    string += '''\\section{Chemins critiques du projet}
-'''
-    string += '''Les chemins critiques de votre projet sont les suivants : \\medskip
-'''
-    critique = chemin_critique(g, 'Dep', 'Fin', fichier_taches)
-    for chemin in critique[0]:
-        string += ''' 
-''' + str(chemin) + '\\medskip' '''
+\\end{tabular}
+La duree totale de votre projet est de '''
+    string += str(dicotard[n_triés[-1]])+'.\n'
 
-'''
-    string += "Leur duree est de : " + str(critique[1]) + " jours"
-    """
+
+
+                               #Chemins critiques
     if suivi1 is not None:
         n_triés,n_crit,dicotot,dicotard = analyse_PERT(suivi1)
         string += '''
@@ -110,10 +102,12 @@ Tache & Duree & Date de debut au plus tot & Date de fin au plus tard & Mou\\tabu
 '''
 
         string += '''
-\\end{tabular}'''
+\\end{tabular}
+La duree totale de votre projet est de '''
+        string += str(dicotard[n_triés[-1]])+'.\n'
 
     if suivi2 is not None:
-        n_triés,n_crit,dicotot,dicotard = analyse_PERT(suivi1)
+        n_triés,n_crit,dicotot,dicotard = analyse_PERT(suivi2)
         string += '''
 \\subsection{Suivi 2}
 Ici vous pouvez voir les dates de départ au plus tot et de fin au plus tard du suivi n°2. \\\\
@@ -138,10 +132,12 @@ Tache & Duree & Date de debut au plus tot & Date de fin au plus tard & Mou\\tabu
 '''
 
         string += '''
-\\end{tabular}'''
+\\end{tabular}
+La duree totale de votre projet est de '''
+        string += str(dicotard[n_triés[-1]])+'.\n'
 
     if suivi3 is not None:
-        n_triés,n_crit,dicotot,dicotard = analyse_PERT(suivi1)
+        n_triés,n_crit,dicotot,dicotard = analyse_PERT(suivi3)
         string += '''
 \\subsection{Suivi 3}
 Ici vous pouvez voir les dates de départ au plus tot et de fin au plus tard du suivi n°3. \\\\
@@ -166,13 +162,18 @@ Tache & Duree & Date de debut au plus tot & Date de fin au plus tard & Mou\\tabu
 '''
 
         string += '''
-\\end{tabular}'''
+\\end{tabular}
+La duree totale de votre projet est de '''
+        string += str(dicotard[n_triés[-1]])+'.\n'
 
 
 
     string += ('''
 \\end{document}''')
     return string
+
+
+
 
 def rediger_rapport(fichier_csv):
     string = rediger_lateX(fichier_csv)
@@ -182,7 +183,6 @@ def rediger_rapport(fichier_csv):
 
 
 def main():
-    
     fichier_graphe = input("quel est le nom de votre fichier (sans le .csv) : ")
     rediger_rapport(fichier_graphe)
 
